@@ -1,8 +1,8 @@
 """ Module that collects variety utility functions for geospatial programming """
 
-import copy
 import functools
 import glob
+import json
 import logging
 import os
 import pickle
@@ -14,6 +14,7 @@ import fiona
 import numpy as np
 import ogr2ogr
 import pandas as pd
+import pyproj
 from fiona.crs import from_epsg
 from lxml import etree
 from matplotlib import path
@@ -23,7 +24,7 @@ from osgeo import osr
 from scipy.spatial import distance
 from scipy.spatial.distance import pdist, squareform
 from shapely.geometry import mapping, shape, Polygon, MultiPolygon
-from shapely.ops import unary_union
+from shapely.ops import unary_union, transform
 from sqlalchemy.orm import Session
 from tqdm import tqdm
 from unidecode import unidecode
@@ -114,6 +115,9 @@ def create_postal_codes_shps() -> None:
     teryt_gmn_paths_dict = create_geom_refs_dict()
     wod_pow_shape = read_wod_pow_shapes()
 
+    # Finalne atrybuty zapisywanych plikow SHP
+    fin_schema = {'geometry': 'Polygon', 'properties': {'Value': 'int', 'Name': 'str'}}
+
     # Tworzymy folder 'SHAPES'
     if not os.path.exists(shp_fold):
         os.mkdir(shp_fold)
@@ -131,16 +135,16 @@ def create_postal_codes_shps() -> None:
         c_post_cods = teryt_pc_dict[teryt_code]
 
         if len(c_post_cods) < 2:
-            sngl_pc_zone_shp(teryt_code, paths_list, c_post_cods, shp_fold)
+            sngl_pc_zone_shp(teryt_code, paths_list, c_post_cods, shp_fold, fin_schema)
         else:
-            mult_pc_zones_shps(teryt_code, paths_list, c_post_cods, prg_cols, shp_fold)
+            mult_pc_zones_shps(teryt_code, paths_list, c_post_cods, prg_cols, shp_fold, fin_schema)
 
     # Laczymy wielokaty kodow pocztowych po wojewodztwach i zapisujemy je na dysku twardym
-    save_merged_shps(shp_fold, wod_pow_shape, teryt_gmn_paths_dict)
+    save_merged_shps(shp_fold, wod_pow_shape, teryt_gmn_paths_dict, fin_schema)
 
 
 @time_decorator
-def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict: dict):
+def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict: dict, fin_schema: dict):
     """ Function that merges postcodes shapefiles by voivodeship and save them to hard disk """
     # Wczytujemy słownik kodów TERYT województw
     woj_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_WOJ_PATH']))
@@ -149,12 +153,11 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
     shp_list = glob.glob(os.path.join(shp_fold, "*.shp"))
     curr_pc = 1
 
-    # Pobieramy metadane pierwszego z plikow SHP
-    with fiona.open(shp_list[0]) as input1:
-        meta = copy.deepcopy(input1.meta)
-
     # Tworzymy ściezke do finalnych map
     fin_maps_path = os.path.join(os.environ["PARENT_PATH"], "fin_maps")
+
+    # Tworzymy słownik z finalnymi wielokatami dla calej Polski
+    all_pl_pc_dict = {}
 
     if not os.path.exists(fin_maps_path):
         os.mkdir(fin_maps_path)
@@ -189,26 +192,64 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
         prepare_merging(fin_geom_dict, wod_pow_shape, pc_dict, curr_pc)
 
         # Zapisujemy ksztalty regionow kodow pocztowych do lacznego pliku SHP
-        merge_all_shs_save(merged_shps_path, meta, pc_dict, fin_maps_path, woj_name)
+        merge_all_shps_save(merged_shps_path, pc_dict, fin_maps_path, woj_name, all_pl_pc_dict, fin_schema)
+
+    # Zapisujemy laczny plik dla wszystkich wielokatow kodow pocztowych
+    if not os.path.exists(os.path.join(fin_maps_path, "POLSKA")):
+        os.mkdir(os.path.join(fin_maps_path, "POLSKA"))
+
+    all_pl_shps_path = os.path.join(fin_maps_path, "POLSKA\\POLSKA_ALL_PC.shp")
+    print("\nPOLSKA")
+
+    with fiona.open(all_pl_shps_path, mode='w', crs=from_epsg(int(os.environ['PL_CRDS'])), driver='ESRI Shapefile',
+                    schema=fin_schema) as output:
+        for pc_code, val_pc in tqdm(all_pl_pc_dict.items(), desc='Saving post codes areas of whole country: '):
+            prop_dict = {'Value': val_pc[0], "Name": pc_code}
+            output.write({'geometry': mapping(val_pc[1]), 'properties': prop_dict})
+
+    # Konwertujemy zbiorczy plik SHP do formstu GEOJSON
+    fin_geojson_path = os.path.join(fin_maps_path, "POLSKA\\POLSKA_ALL_PC.geojson")
+    fin_srs = 'EPSG:' + os.environ['WORLD_CRDS']
+    ogr2ogr.main(["", "-f", "GeoJSON", fin_geojson_path, all_pl_shps_path, "-lco", "RFC7946=YES", "-t_srs", fin_srs])
+    # Opcja "RFC7946=YES" - właściwy format pliku GEOJSON (dobrze interporetowalny przez mapy Google)
 
 
-def merge_all_shs_save(merged_shps_path: str, meta: dict, pc_dict: dict, fin_maps_path: str, woj_name: str):
+def merge_all_shps_save(merged_shps_path: str, pc_dict: dict, fin_maps_path: str, woj_name: str, all_pl_pc_dict: dict,
+                        fin_schema: dict):
     """ Function that merges all polygons of post codes areas and saves them to files .shp and .geojson """
 
-    with fiona.open(merged_shps_path, 'w', **meta) as output:
-        tq_desc = 'Merging postcodes shapes and saving them to the hard drive: '
+    fin_pc_dict = {}
+    tq_desc = 'Merging postcodes shapes and saving them to the hard drive: '
 
+    # Transformacje układów współrzędnych
+    curr_srs = 'EPSG:' + os.environ['PL_CRDS']
+    fin_srs = 'EPSG:' + os.environ['WORLD_CRDS']
+    reproject_srs = pyproj.Transformer.from_crs(curr_srs, fin_srs, always_xy=True).transform
+
+    with fiona.open(merged_shps_path, mode='w', crs=from_epsg(int(os.environ['PL_CRDS'])), driver='ESRI Shapefile',
+                    schema=fin_schema) as output:
         for pc_code, gms_l in tqdm(pc_dict.items(), desc=tq_desc):
             un_geoms = unary_union(gms_l[1])
             prop_dict = {'Value': gms_l[0], "Name": pc_code}
 
             if un_geoms.type == "MultiPolygon":
+
+                fin_polygs_list = []
+
                 for c_plg in un_geoms:
                     # Tworzymy nowy wielokat bez wewnetrznych dziur
                     fin_un_geom = Polygon(c_plg.exterior.coords)
 
                     # Zapisujemy nowoutworzony wielokat
                     output.write({'geometry': mapping(fin_un_geom), 'properties': prop_dict})
+                    fin_polygs_list.append(fin_un_geom)
+
+                fin_mult_polyg = MultiPolygon(fin_polygs_list)
+
+                # Zmieniamy system koordynatów i zapisujemy biezacy wielokat do slownikow
+                fin_mult_polyg_rpj = transform(reproject_srs, fin_mult_polyg)
+                fin_pc_dict[pc_code] = fin_mult_polyg_rpj.wkt
+                all_pl_pc_dict[pc_code] = (gms_l[0], fin_mult_polyg)
 
             elif un_geoms.type == "Polygon":
                 # Tworzymy nowy wielokat bez wewnetrznych dziur
@@ -216,6 +257,15 @@ def merge_all_shs_save(merged_shps_path: str, meta: dict, pc_dict: dict, fin_map
 
                 # Zapisujemy nowoutworzony wielokat
                 output.write({'geometry': mapping(fin_un_geom), 'properties': prop_dict})
+
+                # Zmieniamy system koordynatów i zapisujemy biezacy wielokat do slownikow
+                fin_un_geom_rpj = transform(reproject_srs, fin_un_geom)
+                fin_pc_dict[pc_code] = fin_un_geom_rpj.wkt
+                all_pl_pc_dict[pc_code] = (gms_l[0], fin_un_geom)
+
+    # Zapisujemy słownik wielokatow do '.txt'
+    with open(os.path.join(fin_maps_path, woj_name + "\\" + woj_name + "_ALL_PC.txt"), 'w') as file:
+        file.write(json.dumps(fin_pc_dict))
 
     # Konwertujemy zbiorczy plik SHP do formstu GEOJSON
     fin_geojson_path = os.path.join(fin_maps_path, woj_name + "\\" + woj_name + "_ALL_PC.geojson")
@@ -382,21 +432,19 @@ def create_geom_dict(fin_geom_dict: dict, teryt_arr: np.ndarray, teryt_gmn_paths
             fin_geom_dict[teryt_code]["GEOM_LIST"] = [curr_code]
 
 
-def sngl_pc_zone_shp(teryt_code: str, paths_list: list, c_post_cods: list, shp_fold: str):
+def sngl_pc_zone_shp(teryt_code: str, paths_list: list, c_post_cods: list, shp_fold: str, fin_schema: dict):
     """ Function that creates single shapefile of postal codes zones for single municipality """
 
-    # Atrybuty pliku Shapefile
-    my_schema = {'geometry': 'Polygon', 'properties': {'Value': 'int', 'Name': 'str'}}
-
     # Zapisujemy nowy plik Shapefile na dysku
-    with fiona.open(os.path.join(shp_fold, teryt_code + "_0_" + c_post_cods[0] + ".shp"), mode='w', crs=from_epsg(2180),
-                    driver='ESRI Shapefile', schema=my_schema) as c:
+    with fiona.open(os.path.join(shp_fold, teryt_code + "_0_" + c_post_cods[0] + ".shp"), mode='w',
+                    crs=from_epsg(int(os.environ['PL_CRDS'])), driver='ESRI Shapefile', schema=fin_schema) as c:
         for c_points in paths_list:
             geom = Polygon(c_points)
             c.write({'geometry': mapping(geom), 'properties': {'Value': 1, "Name": c_post_cods[0]}})
 
 
-def mult_pc_zones_shps(teryt_code: str, paths_list: list, c_post_cods: list, prg_cols: list, shp_fold: str):
+def mult_pc_zones_shps(teryt_code: str, paths_list: list, c_post_cods: list, prg_cols: list, shp_fold: str,
+                       fin_schema: dict):
     """ Function that creates multiple shapefiles of postcodes zones for single municipality """
 
     # Lista punktów adresowych z bazy PRG dla danego kodu TERYT
@@ -467,7 +515,7 @@ def mult_pc_zones_shps(teryt_code: str, paths_list: list, c_post_cods: list, prg
             codes_lengths = np.array([(key, len(prg_pts)) for key, prg_pts in grp_prg_pts.items()])
             curr_code = codes_lengths[np.argmax(codes_lengths[:, 1].astype(float)), 0] if len(codes_lengths) > 0 \
                 else c_post_cods
-            sngl_pc_zone_shp(teryt_code, [c_points], curr_code, shp_fold)
+            sngl_pc_zone_shp(teryt_code, [c_points], curr_code, shp_fold, fin_schema)
 
 
 def rmv_isl_pc(fin_pc_arr: np.ndarray, prg_pts_ids: np.ndarray):
