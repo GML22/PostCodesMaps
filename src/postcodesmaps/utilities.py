@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import pickle
+import re
 import time
 import zipfile
 from itertools import groupby
@@ -158,6 +159,9 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
     # Tworzymy ściezke do finalnych map
     fin_maps_path = os.path.join(os.environ["PARENT_PATH"], "fin_maps")
 
+    # Tworzymy ściezke do wielokatow kodow pocztowych wv formacie TXT
+    txt_fold = os.path.join(os.environ["PARENT_PATH"], os.environ['PC_TXT_FOLD'])
+
     # Transformacje układów współrzędnych
     curr_srs = 'EPSG:' + os.environ['PL_CRDS']
     fin_srs = 'EPSG:' + os.environ['WORLD_CRDS']
@@ -191,7 +195,6 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
         maps_name = teryt + "_" + woj_name + "\\" + teryt + "_" + woj_name + "_ALL_PC_"
         mrgd_plg_path_shp = os.path.join(fin_maps_path, maps_name + os.environ['PL_CRDS'] + ".shp")
         mrgd_plg_path_geoj = os.path.join(fin_maps_path, maps_name + os.environ['WORLD_CRDS'] + ".geojson")
-        mrgd_plg_path_txt = os.path.join(fin_maps_path, maps_name + os.environ['WORLD_CRDS'] + ".txt")
 
         # Przechodzimy przez wszystkie wielokaty dla danego wojewodztwa i dodajemy je do slownika 'fin_geom_dict'
         create_geom_dict(fin_geom_dict, teryt_arr, teryt_gmn_paths_dict)
@@ -204,8 +207,8 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
         prepare_merging(fin_geom_dict, wod_pow_shape, pc_dict, curr_pc)
 
         # Zapisujemy ksztalty regionow kodow pocztowych do lacznego pliku SHP
-        merge_all_shps_save(mrgd_plg_path_shp, mrgd_plg_path_geoj, mrgd_plg_path_txt, pc_dict, all_pl_pc_dict,
-                            fin_schema, reproject_srs, fin_srs, coords_prec)
+        merge_all_shps_save(mrgd_plg_path_shp, mrgd_plg_path_geoj, pc_dict, all_pl_pc_dict, fin_schema, fin_srs,
+                            coords_prec)
 
     # Zapisujemy laczny plik SHP dla wszystkich wielokatow kodow pocztowych
     if all_pl_pc_dict:
@@ -214,22 +217,27 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
         if not os.path.exists(os.path.join(fin_maps_path, "00_POLSKA")):
             os.mkdir(os.path.join(fin_maps_path, "00_POLSKA"))
 
-        all_pd_dict = {}
+        if not os.path.exists(txt_fold):
+            os.mkdir(txt_fold)
+
         all_pl_shps_path = os.path.join(fin_maps_path, "00_POLSKA\\00_POLSKA_ALL_PC_" + os.environ['PL_CRDS'] + ".shp")
 
         # Zapisujemy wielokaty do SHP
         with fiona.open(all_pl_shps_path, mode='w', crs=from_epsg(int(os.environ['PL_CRDS'])), driver='ESRI Shapefile',
                         schema=fin_schema) as output:
-            for pc_code, val_pc in tqdm(all_pl_pc_dict.items(), desc='Saving post codes areas of whole country: '):
-                output.write({'geometry': mapping(val_pc[1]), 'properties': {'Value': val_pc[0], "Name": pc_code}})
-                fin_geom_rpj = transform(reproject_srs, val_pc[1])
-                fin_geom_red_prec = wkt.loads(wkt.dumps(fin_geom_rpj, rounding_precision=os.environ['COORDS_PREC']))
-                all_pd_dict[pc_code] = fin_geom_red_prec.wkt
+            for pc_reg, pc_dict in tqdm(all_pl_pc_dict.items(), desc='Saving post codes areas of whole country: '):
 
-        # Zapisujemy słownik wielokatow do TXT
-        txt_path = os.path.join(fin_maps_path, "00_POLSKA\\00_POLSKA_ALL_PC_" + os.environ['WORLD_CRDS'] + ".txt")
-        with open(txt_path, 'w') as file:
-            file.write(json.dumps(all_pd_dict))
+                all_pd_dict = {}
+
+                for pc_code, val_pc in pc_dict.items():
+                    output.write({'geometry': mapping(val_pc[1]), 'properties': {'Value': val_pc[0], "Name": pc_code}})
+                    fin_geom_rpj = transform(reproject_srs, val_pc[1])
+                    fin_geom_red_prec = wkt.loads(wkt.dumps(fin_geom_rpj, rounding_precision=os.environ['COORDS_PREC']))
+                    all_pd_dict[pc_code] = fin_geom_red_prec.wkt
+
+                # Zapisujemy słownik wielokatow dla biezacego regionu kodow do pliku TXT
+                with open(os.path.join(txt_fold, "PC_" + pc_reg + ".txt"), 'w') as file:
+                    file.write(json.dumps(all_pd_dict))
 
         # Konwertujemy zbiorczy plik SHP do formstu GEOJSON
         fin_geojson_path = os.path.join(fin_maps_path, "00_POLSKA\\00_POLSKA_ALL_PC_" + os.environ['WORLD_CRDS'] +
@@ -239,12 +247,10 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
                       fin_srs, "-lco", coords_prec, '-nln', fin_name])
 
 
-def merge_all_shps_save(mrgd_plg_path_shp: str, mrgd_plg_path_geoj: str, mrgd_plg_path_txt: str, pc_dict: dict,
-                        all_pl_pc_dict: dict, fin_schema: dict, reproject_srs: pyproj.Transformer.transform,
-                        fin_srs: str, coords_prec: str):
+def merge_all_shps_save(mrgd_plg_path_shp: str, mrgd_plg_path_geoj: str, pc_dict: dict, all_pl_pc_dict: dict,
+                        fin_schema: dict, fin_srs: str, coords_prec: str):
     """ Function that merges all polygons of post codes areas and saves them to files .shp and .geojson """
 
-    fin_pc_dict = {}
     tq_desc = 'Merging postcodes shapes and saving them to the hard drive: '
 
     # Zapisujemy wielokaty do SHP
@@ -260,54 +266,44 @@ def merge_all_shps_save(mrgd_plg_path_shp: str, mrgd_plg_path_geoj: str, mrgd_pl
 
                 for c_plg in un_geoms:
                     # Tworzymy nowy wielokat bez wewnetrznych dziur
-                    fin_un_geom = Polygon(c_plg.exterior.coords)
+                    c_un_geom = Polygon(c_plg.exterior.coords)
 
-                    # Zapisujemy nowoutworzony wielokat
-                    output.write({'geometry': mapping(fin_un_geom), 'properties': prop_dict})
-                    fin_polygs_list.append(fin_un_geom)
+                    # Zapisujemy nowoutworzony wielokat na dysku
+                    output.write({'geometry': mapping(c_un_geom), 'properties': prop_dict})
+                    fin_polygs_list.append(c_un_geom)
 
-                # Zmieniamy system koordynatów i zapisujemy biezacy wielokat do slownikow
-                fin_mult_polyg = MultiPolygon(fin_polygs_list)
-                fin_mlt_rpj = transform(reproject_srs, fin_mult_polyg)
-                fin_mlt_red_prec = wkt.loads(wkt.dumps(fin_mlt_rpj, rounding_precision=int(os.environ['COORDS_PREC'])))
-                fin_pc_dict[pc_code] = fin_mlt_red_prec.wkt
-
-                if pc_code not in all_pl_pc_dict:
-                    all_pl_pc_dict[pc_code] = (gms_l[0], fin_mult_polyg)
-                else:
-                    all_pl_pc_dict[pc_code] = (gms_l[0], unary_union([all_pl_pc_dict[pc_code][1], fin_mult_polyg]))
+                # Z bieżący wielokątów tworzymy MultiPolygon
+                fin_un_geom = MultiPolygon(fin_polygs_list)
 
             elif un_geoms.type == "Polygon":
                 # Tworzymy nowy wielokat bez wewnetrznych dziur
                 fin_un_geom = Polygon(un_geoms.exterior.coords)
 
-                # Zapisujemy nowoutworzony wielokat
+                # Zapisujemy nowoutworzony wielokat na dysku
                 output.write({'geometry': mapping(fin_un_geom), 'properties': prop_dict})
 
-                # Zmieniamy system koordynatów i zapisujemy biezacy wielokat do slownikow
-                fin_geom_rpj = transform(reproject_srs, fin_un_geom)
-                fin_geom_red_prec = wkt.loads(wkt.dumps(fin_geom_rpj, rounding_precision=os.environ['COORDS_PREC']))
-                fin_pc_dict[pc_code] = fin_geom_red_prec.wkt
-
-                if pc_code not in all_pl_pc_dict:
-                    all_pl_pc_dict[pc_code] = (gms_l[0], fin_un_geom)
-                else:
-                    all_pl_pc_dict[pc_code] = (gms_l[0], unary_union([all_pl_pc_dict[pc_code][1], fin_un_geom]))
-
-    # Zapisujemy słownik wielokatow do TXT
-    with open(mrgd_plg_path_txt, 'w') as file:
-        file.write(json.dumps(fin_pc_dict))
+            # Dodajemy multipolygon do słownika wszystkich wielokatow
+            if pc_code[:2] not in all_pl_pc_dict:
+                all_pl_pc_dict[pc_code[:2]] = {pc_code: (gms_l[0], fin_un_geom)}
+            elif pc_code[:2] in all_pl_pc_dict and pc_code not in all_pl_pc_dict[pc_code[:2]]:
+                all_pl_pc_dict[pc_code[:2]][pc_code] = (gms_l[0], fin_un_geom)
+            elif pc_code[:2] in all_pl_pc_dict and pc_code in all_pl_pc_dict[pc_code[:2]]:
+                all_pl_pc_dict[pc_code[:2]][pc_code] = (gms_l[0], unary_union([all_pl_pc_dict[pc_code[:2]][pc_code][1],
+                                                                               fin_un_geom]))
 
     # Konwertujemy zbiorczy plik SHP do formatu GEOJSON
     fin_name = os.path.basename(mrgd_plg_path_geoj)[:-8]
     ogr2ogr.main(["", "-f", "GeoJSON", mrgd_plg_path_geoj, mrgd_plg_path_shp, "-lco", "RFC7946=YES", "-t_srs", fin_srs,
                   "-lco", coords_prec, '-nln', fin_name])
     # Opcja "RFC7946=YES" - właściwy format pliku GEOJSON (dobrze interporetowalny przez mapy Google)
-    # Opcja "COORDINATE_PRECISION=5" - dokladnosc do okolo 1 metra
+    # Opcja "COORDINATE_PRECISION=5" - redukujemy dokladnosc koordynatów do 5 miejsc po przecinku (do okolo 1 metra)
 
 
 def prepare_merging(fin_geom_dict: dict, wod_pow_shape: Polygon, pc_dict: dict, curr_pc: list):
     """ Function that prepares postcodes polygons for merging """
+
+    # Pattern walidujacy kod pocztowy
+    pc_pattern = re.compile(r"\d{2}-\d{3}")
 
     for teryt_code, teryt_dict in tqdm(fin_geom_dict.items(), desc='Preparing postcodes shapes for merging: '):
         if teryt_dict["NUM_PC"] > 1:
@@ -315,6 +311,13 @@ def prepare_merging(fin_geom_dict: dict, wod_pow_shape: Polygon, pc_dict: dict, 
             fin_geom_arr = teryt_dict["GEOM_LIST"]
 
             for j, c_geom in enumerate(fin_geom_arr):
+                # Kod pocztowy
+                fin_pc = c_geom[2]
+
+                # Jeżeli dany kod nie pasuje do patternu kodów pocztowych to pomijamy jego wielokat
+                if not pc_pattern.match(fin_pc):
+                    continue
+
                 if c_geom[3]:
                     c_geom_mrr = c_geom[1].buffer(int(os.environ['BUFF_SIZE']))
                     gmn_poly = teryt_dict["GMN_SHP"]
@@ -370,16 +373,20 @@ def prepare_merging(fin_geom_dict: dict, wod_pow_shape: Polygon, pc_dict: dict, 
                 if not fin_geom.is_empty and (fin_geom.type == "MultiPolygon" or fin_geom.type == "Polygon"):
                     fin_geom_arr[j, 1] = fin_geom
 
-                    if c_geom[2] in pc_dict:
-                        pc_dict[c_geom[2]][1] += [fin_geom]
+                    if fin_pc in pc_dict:
+                        pc_dict[fin_pc][1] += [fin_geom]
                     else:
-                        pc_dict[c_geom[2]] = [curr_pc[0], [fin_geom]]
+                        pc_dict[fin_pc] = [curr_pc[0], [fin_geom]]
                         curr_pc[0] += 1
                 else:
                     fin_geom_arr[j, 1] = Polygon([])
         else:
             # Finalny kod pocztowy
             fin_pc = teryt_dict["GEOM_LIST"][0]
+
+            # Jeżeli dany kod nie pasuje do patternu kodów pocztowych to pomijamy jego wielokat
+            if not pc_pattern.match(fin_pc):
+                continue
 
             # Upewniamy się, że finalne mapy nie będą obejmowały Zalewu Szczecińskiego, Zatoki Gdańskiej
             # i Zalewu Wiślanego
