@@ -41,7 +41,7 @@ def create_logger(name: str) -> logging.Logger:
     parent_path = os.path.abspath(os.path.join(os.path.join(os.getcwd(), os.pardir), os.pardir))
 
     # Tworzymy plik loggera
-    logging.basicConfig(filename=os.path.join(parent_path, "files\\logs_pcpl.log"), level=logging.DEBUG,
+    logging.basicConfig(filename=os.path.join(parent_path, "files\\logs_pc_maps.log"), level=logging.DEBUG,
                         format='%(asctime)s %(name)s[%(process)d] %(levelname)s: %(message)s',
                         datefmt='%H:%M:%S', filemode="a")
 
