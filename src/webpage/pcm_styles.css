@@ -8,6 +8,14 @@ html, body{
 	font-size: 1.0vw;
 }
 
+.navbar{
+	overflow: hidden;
+	background-color: rgba(0, 0, 0, 0.8);
+	font-family: 'Source Sans Pro', sans-serif;
+	height: 3.65vw;
+	font-size: 1.0vw;
+}
+
 #map{
 	height: 100%;
     width: 100%;
@@ -25,63 +33,46 @@ html, body{
 	height: 4.15vw;
 	cursor: pointer;
 	font-size: 2vw;
-    background-color: rgba(0, 0 , 0 ,0.8);
+    background-color: inherit;
     margin-top: -0.5vw;
-}
-
-.navbar {
-	overflow: hidden;
-	background-color: rgba(0, 0 , 0 ,0.8);
-	font-family: 'Source Sans Pro', sans-serif;
-	height: 3.65vw;
-	font-size: 1.0vw;
 }
 
 #but1{
 	width: 18vw;
 	height: 3.65vw;
+	background-color: inherit;
 }
 
 #drop1{
 	width: 18vw;
 }
 
-.navbar a {
-	float: left;
-	font-size: 1.0vw;
-	font-weight: bold;
-	color: white;
-	text-decoration: none;
-}
-
-.dropdown {
+.dropdown{
 	float: left;
 	overflow: hidden;
-	cursor: pointer;
 	display: inline-block;
 }
 
-.dropdown .dropbtn {
+.dropbtn{
 	border: none;
 	outline: none;
 	color: white;
-	background-color: inherit;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-size: 1.0vw;
 	font-weight: bold;
 }
 
-.navbar a:hover, .dropdown:hover, .dropbtn, #home:hover {
-	background-color: rgb(220, 20, 60);
+a:hover, .dropbtn:hover, #home:hover{
+	background-color: rgb(220, 20, 60) !important;
 }
 
-.dropdown-content {
+.dropdown-content{
 	display: none;
 	position: absolute;
 	z-index: 1;
 }
 
-.dropdown-content a {
+.dropdown-content a{
 	float: none;
 	color: white;
 	font-weight: bold;
@@ -93,9 +84,10 @@ html, body{
 	background-color: rgba(0, 0, 0, 0.8);
 	display: block;
 	text-align: center;
+	cursor: pointer;
 }
 
-.dropdown-content label {
+.dropdown-content label{
 	float: none;
 	color: white;
 	font-weight: bold;
@@ -107,33 +99,28 @@ html, body{
 	text-align: center;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover .dropdown-content{
 	display: block;
 }
 
-.option:hover {
-	display:block;
-}
-
-.searchDiv {
+.searchDiv{
 	float: right;
 	margin-left: 1vw;
 }
 
-#searchInput {
-	background-color: #fff;
+#searchInput{
 	font-size: 0.9vw;
 	font-weight: bold;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-style: italic;
 	text-overflow: ellipsis;
 	margin-top: 0.35vw;
-	width: 18vw;
+	width: 20vw;
 	height: 2.5vw;
 	margin-right: 1vw;
 }
 
-#lab0{
+#search1{
 	font-family: 'Source Sans Pro', sans-serif;
 	font-weight: bold;
 	color: white;
