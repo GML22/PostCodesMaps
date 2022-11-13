@@ -1,0 +1,140 @@
+html, body{
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 1.0vw;
+}
+
+#map{
+	height: 100%;
+    width: 100%;
+	display: block;
+	posiotion: absolute;
+	bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;
+}
+
+#home{
+	width: 4vw;
+	height: 4.15vw;
+	cursor: pointer;
+	font-size: 2vw;
+    background-color: rgba(0, 0 , 0 ,0.8);
+    margin-top: -0.5vw;
+}
+
+.navbar {
+	overflow: hidden;
+	background-color: rgba(0, 0 , 0 ,0.8);
+	font-family: 'Source Sans Pro', sans-serif;
+	height: 3.65vw;
+	font-size: 1.0vw;
+}
+
+#but1{
+	width: 18vw;
+	height: 3.65vw;
+}
+
+#drop1{
+	width: 18vw;
+}
+
+.navbar a {
+	float: left;
+	font-size: 1.0vw;
+	font-weight: bold;
+	color: white;
+	text-decoration: none;
+}
+
+.dropdown {
+	float: left;
+	overflow: hidden;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.dropdown .dropbtn {
+	border: none;
+	outline: none;
+	color: white;
+	background-color: inherit;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 1.0vw;
+	font-weight: bold;
+}
+
+.navbar a:hover, .dropdown:hover, .dropbtn, #home:hover {
+	background-color: rgb(220, 20, 60);
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	z-index: 1;
+}
+
+.dropdown-content a {
+	float: none;
+	color: white;
+	font-weight: bold;
+	padding-top: 0.6vw;
+	padding-bottom: 0.6vw;
+	padding-left: 0.1vw;
+	padding-right: 0.1vw;
+	text-decoration: none;
+	background-color: rgba(0, 0, 0, 0.8);
+	display: block;
+	text-align: center;
+}
+
+.dropdown-content label {
+	float: none;
+	color: white;
+	font-weight: bold;
+	padding-top: 1vw;
+	padding-bottom: 1vw;
+	text-decoration: none;
+	background-color: rgba(0, 0, 0, 0.8);
+	display: block;
+	text-align: center;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.option:hover {
+	display:block;
+}
+
+.searchDiv {
+	float: right;
+	margin-left: 1vw;
+}
+
+#searchInput {
+	background-color: #fff;
+	font-size: 0.9vw;
+	font-weight: bold;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-style: italic;
+	text-overflow: ellipsis;
+	margin-top: 0.35vw;
+	width: 18vw;
+	height: 2.5vw;
+	margin-right: 1vw;
+}
+
+#lab0{
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: bold;
+	color: white;
+}

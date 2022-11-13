@@ -41,7 +41,7 @@ def create_logger(name: str) -> logging.Logger:
     parent_path = os.path.abspath(os.path.join(os.path.join(os.getcwd(), os.pardir), os.pardir))
 
     # Tworzymy plik loggera
-    logging.basicConfig(filename=os.path.join(parent_path, "files\\logs_pc_maps.log"), level=logging.DEBUG,
+    logging.basicConfig(filename=os.path.join(parent_path, "files\\logs_pcm.log"), level=logging.DEBUG,
                         format='%(asctime)s %(name)s[%(process)d] %(levelname)s: %(message)s',
                         datefmt='%H:%M:%S', filemode="a")
 
@@ -149,7 +149,7 @@ def create_postal_codes_shps() -> None:
 @time_decorator
 def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict: dict, fin_schema: dict,
                      curr_pc: list):
-    """ Function that merges postcodes shapefiles by voivodeship and save them to hard disk """
+    """ Function that merges postcodes shapefiles by provinces and save them to hard disk """
     # Wczytujemy słownik kodów TERYT województw
     woj_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_WOJ_PATH']))
 
@@ -437,9 +437,9 @@ def rmv_sml_ovrlp_polygs(fin_geom_dict: dict):
 
 
 def create_geom_dict(fin_geom_dict: dict, teryt_arr: np.ndarray, teryt_gmn_paths_dict: dict):
-    """" Function that creates dictionairy of all polygons in current voivodeship"""
+    """" Function that creates dictionairy of all polygons in current province """
 
-    for shp_path, teryt_code in tqdm(teryt_arr, desc='Creating dictionairy of shapefiles for current voivodeship: '):
+    for shp_path, teryt_code in tqdm(teryt_arr, desc='Creating dictionairy of shapefiles for current province: '):
         # Bieżący kod pocztowy
         curr_code = shp_path[-10:-4]
         count_teryt = np.sum(teryt_arr[:, 1] == teryt_code)
