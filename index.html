@@ -13,22 +13,24 @@
 <body onload="initMap();">
 <div class="navbar">
     <div class="dropdown">
-        <button class="dropbtn" id="home" onclick="location.reload();" type="button">&#8962;</button>
+        <button class="homebtn" id="home" onclick="location.reload();" type="button">&#8962;</button>
     </div>
     <div class="dropdown">
         <button class="dropbtn" id="but1" type="button"><b>Postcode areas of Polish provinces</b></button>
         <div class="dropdown-content" id="drop1"></div>
     </div>
     <div class="searchDiv">
-        <label for="searchInput" id="search1">Search engine:</label>
         <input class="controls" id="searchInput" placeholder="Specify Polish postcode (in the format '00-000')"
-               type="text">
+               autocomplete="off" onkeydown='key_down_handler(event)' type="search">
+        <div class="autocomplete-content" id="autoc1"></div>
     </div>
+    <label for="searchInput" id="srch_lbl">Search engine:</label>
 </div>
 <div id="map"></div>
 <script crossorigin="" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
         src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"></script>
 <script src="./src/webpage/pcm_jscripts.js"></script>
 <script src="./src/webpage/leaflet.ajax.min.js"></script>
+<script src="./src/webpage/jquery-3.6.1.min.js"></script>
 </body>
 </html>

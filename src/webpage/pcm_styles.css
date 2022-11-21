@@ -28,23 +28,16 @@ html, body{
     z-index: 0;
 }
 
-#home{
+.homebtn{
+    border: none;
+	outline: none;
+	color: white;
 	width: 4vw;
 	height: 4.15vw;
 	cursor: pointer;
 	font-size: 2vw;
     background-color: inherit;
     margin-top: -0.5vw;
-}
-
-#but1{
-	width: 18vw;
-	height: 3.65vw;
-	background-color: inherit;
-}
-
-#drop1{
-	width: 18vw;
 }
 
 .dropdown{
@@ -60,6 +53,9 @@ html, body{
 	font-family: 'Source Sans Pro', sans-serif;
 	font-size: 1.0vw;
 	font-weight: bold;
+	width: 18vw;
+    height: 3.65vw;
+    background-color: inherit;
 }
 
 a:hover, .dropbtn:hover, #home:hover{
@@ -70,6 +66,7 @@ a:hover, .dropbtn:hover, #home:hover{
 	display: none;
 	position: absolute;
 	z-index: 1;
+	width: 18vw;
 }
 
 .dropdown-content a{
@@ -106,6 +103,7 @@ a:hover, .dropbtn:hover, #home:hover{
 .searchDiv{
 	float: right;
 	margin-left: 1vw;
+	display: inline-block;
 }
 
 #searchInput{
@@ -120,7 +118,26 @@ a:hover, .dropbtn:hover, #home:hover{
 	margin-right: 1vw;
 }
 
-#search1{
+.autocomplete-content{
+	display: none;
+	position: absolute;
+	z-index: 1;
+	width: 20vw;
+	margin-top: 0.05vw;
+	background-color: rgb(255, 255, 255);
+    font-size: 0.9vw;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.searchDiv:hover .autocomplete-content{
+	display: block;
+}
+
+#srch_lbl{
+    float: right;
+	margin-top: 1.1vw;
+	margin-right: -0.5vw;
+	display: inline-block;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-weight: bold;
 	color: white;

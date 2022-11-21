@@ -143,15 +143,16 @@ def create_postal_codes_shps() -> None:
             mult_pc_zones_shps(teryt_code, paths_list, c_post_cods, prg_cols, shp_fold, fin_schema)
 
     # Laczymy wielokaty kodow pocztowych po wojewodztwach i zapisujemy je na dysku twardym
-    save_merged_shps(shp_fold, wod_pow_shape, teryt_gmn_paths_dict, fin_schema, curr_pc)
+    save_merged_shps(shp_fold, wod_pow_shape, teryt_gmn_paths_dict, fin_schema, curr_pc, teryt_pc_dict)
 
 
 @time_decorator
 def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict: dict, fin_schema: dict,
-                     curr_pc: list):
+                     curr_pc: list, teryt_pc_dict: dict):
     """ Function that merges postcodes shapefiles by provinces and save them to hard disk """
-    # Wczytujemy słownik kodów TERYT województw
+    # Wczytujemy słowniki kodów TERYT województw i gmin
     woj_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_WOJ_PATH']))
+    gmn_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_GMN_PATH']))
 
     # Z folderu z shapefile'ami wybieramy tylko pliki kończące sie na ".shp"
     shp_list = glob.glob(os.path.join(shp_fold, "*.shp"))
@@ -233,7 +234,12 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
                     output.write({'geometry': mapping(val_pc[1]), 'properties': {'Value': val_pc[0], "Name": pc_code}})
                     fin_geom_rpj = transform(reproject_srs, val_pc[1])
                     fin_geom_red_prec = wkt.loads(wkt.dumps(fin_geom_rpj, rounding_precision=os.environ['COORDS_PREC']))
-                    all_pd_dict[pc_code] = fin_geom_red_prec.wkt
+
+                    for teryt, pc_list in teryt_pc_dict.items():
+                        if pc_code in pc_list:
+                            gmn_name = gmn_teryt_dict[teryt]
+                            all_pd_dict[pc_code] = {"Nazwa gminy": gmn_name, "Polygon": fin_geom_red_prec.wkt}
+                            break
 
                 # Zapisujemy słownik wielokatow dla biezacego regionu kodow do pliku TXT
                 with open(os.path.join(txt_fold, "PC_" + pc_reg + ".txt"), 'w') as file:
