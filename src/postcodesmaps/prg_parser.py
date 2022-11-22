@@ -32,9 +32,9 @@ class PRGDataParser(ABC):
         """ Method that creates TERYT dictionary """
 
         # Wczytujemy slowniki TERYT z dysku
-        self.woj_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_WOJ_PATH']))
-        self.pow_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_POW_PATH']))
-        gmn_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_GMN_PATH']))
+        self.woj_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_WOJ_PATH']), {})
+        self.pow_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_POW_PATH']), {})
+        gmn_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_GMN_PATH']), {})
         self.teryt_dict = {woj_code: {} for woj_code in self.woj_teryt_dict.keys()}
 
         for pow_code in self.pow_teryt_dict.keys():

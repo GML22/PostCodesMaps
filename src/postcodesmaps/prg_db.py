@@ -26,7 +26,7 @@ class PRG(BASE):
     # Definiujemy kolumny tabeli
     prg_point_id = sa.Column('PRG_POINT_ID', sa.Integer, primary_key=True)
     kod_teryt = sa.Column('KOD_TERYT', sa.String, nullable=False, index=True)
-    kod_pocztowy = sa.Column('KOD_POCZTOWY', sa.String, nullable=False)
+    kod_pocztowy = sa.Column('KOD_POCZTOWY', sa.String, nullable=False, index=True)
     szerokosc = sa.Column('SZEROKOSC', sa.Integer, nullable=False)
     dlugosc = sa.Column('DLUGOSC', sa.Integer, nullable=False)
 

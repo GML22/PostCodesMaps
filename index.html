@@ -23,6 +23,9 @@
         <input class="controls" id="searchInput" placeholder="Specify Polish postcode (in the format '00-000')"
                autocomplete="off" onkeydown='key_down_handler(event)' type="search">
         <div class="autocomplete-content" id="autoc1"></div>
+        <button class="clearbtn" id="clr_btn" onclick="javascript:clear_pc_lyrs();" title="Clear all postcodes polygons"
+                type="button">&#10008;
+        </button>
     </div>
     <label for="searchInput" id="srch_lbl">Search engine:</label>
 </div>
@@ -32,5 +35,6 @@
 <script src="./src/webpage/pcm_jscripts.js"></script>
 <script src="./src/webpage/leaflet.ajax.min.js"></script>
 <script src="./src/webpage/jquery-3.6.1.min.js"></script>
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
 </body>
 </html>

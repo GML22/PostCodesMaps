@@ -116,6 +116,8 @@ a:hover, .dropbtn:hover, #home:hover{
 	width: 20vw;
 	height: 2.5vw;
 	margin-right: 1vw;
+	cursor: pointer;
+	text-align: center;
 }
 
 .autocomplete-content{
@@ -127,10 +129,25 @@ a:hover, .dropbtn:hover, #home:hover{
 	background-color: rgb(255, 255, 255);
     font-size: 0.9vw;
     font-family: 'Source Sans Pro', sans-serif;
+    cursor: pointer;
+    text-align: center;
 }
 
 .searchDiv:hover .autocomplete-content{
 	display: block;
+}
+
+input:focus + .autocomplete-content{
+	display: block;
+}
+
+.ac_butt{
+    border: 0.5px solid black;
+}
+
+.ac_butt:hover{
+	background-color: rgb(220, 20, 60) !important;
+	color: white;
 }
 
 #srch_lbl{
@@ -141,4 +158,36 @@ a:hover, .dropbtn:hover, #home:hover{
 	font-family: 'Source Sans Pro', sans-serif;
 	font-weight: bold;
 	color: white;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.clearbtn{
+    float: right;
+    border: none;
+    outline: none;
+    color: white;
+    width: 4vw;
+    height: 4.5vw;
+    cursor: pointer;
+    font-size: 2vw;
+    background-color: inherit;
+    margin-top: -0.8vw;
+    display: inline-block;
+}
+
+.clearbtn:hover{
+	background-color: inherit !important;
+}
+
+.tltip_stl{
+    position: absolute;
+    font-size: 40px;
+    font-weight: 1500;
+    background-color: transparent !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: none !important;
 }
