@@ -141,13 +141,18 @@ input:focus + .autocomplete-content{
 	display: block;
 }
 
+.autocomplete-content:hover .ac_butt:not( :hover ) {
+	background-color: white !important;
+	color: black !important;
+}
+
 .ac_butt{
     border: 0.5px solid black;
 }
 
 .ac_butt:hover{
 	background-color: rgb(220, 20, 60) !important;
-	color: white;
+	color: white !important;
 }
 
 #srch_lbl{

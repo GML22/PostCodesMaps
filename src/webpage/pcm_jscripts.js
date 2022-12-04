@@ -5,20 +5,22 @@ var woj_labs = ['dolnośląskie', 'kujawsko-pomorskie', 'lubelskie', 'lubuskie',
 var woj_files = ['02_DOLNOSLASKIE', '04_KUJAWSKO-POMORSKIE', '06_LUBELSKIE', '08_LUBUSKIE', '10_LODZKIE',
 '12_MALOPOLSKIE', '14_MAZOWIECKIE', '16_OPOLSKIE', '18_PODKARPACKIE', '20_PODLASKIE', '22_POMORSKIE', '24_SLASKIE',
  '26_SWIETOKRZYSKIE', '28_WARMINSKO-MAZURSKIE', '30_WIELKOPOLSKIE', '32_ZACHODNIOPOMORSKIE'];
-var woj_len = woj_labs.length;
 var woj_colors = ['#3cb44b', '#46f0f0', '#4363d8', '#800000', '#000075', '#911eb4', '#ffd700', '#f032e6', '#bcf60c',
 '#ffffff', '#ffff54', '#e6beff', '#ffa07a', '#fffac8', '#c71585', '#aaffc3'];
 var font_colors = ['#ffffff', '#000000', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#000000', '#ffffff', '#000000',
 '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff', '#000000'];
-var woj_visib = [];
 var map_lays = new Array(woj_len);
+var woj_len = woj_labs.length;
+var autofill_dict = {};
+var pc_nums_dict = {};
+var curr_ac_pos = -1;
+var max_ac_len = 10;
+var woj_visib = [];
 var pc_codes = [];
 var visib_pc = [];
-var autofill_dict = {};
-var gmn_pow_nms_dict;
 var pl_names_dict;
-var pc_nums_dict = {};
 var gmn_pow_keys;
+var gmn_pow_nms;
 var map;
 
 function initMap(){
@@ -28,6 +30,7 @@ function initMap(){
     var drop = document.getElementById("drop1");
     var base_path = "./files/POSTCODES_TXT/";
 
+    // Definiujemy mape - koordynaty i zoom
     map = L.map('map').setView([52.2298, 21.0117], 6);
 
     // Dodajemy mape
@@ -55,17 +58,14 @@ function initMap(){
     }
 
     // Dodajemy czyszczenie autosugestii po kliknieciu przycisku czyszczacego
-    $('input[type=search]').on('search', function () {
-        clear_not_vis_lys();
-    });
+    $('input[type=search]').on('search', function (){clear_not_vis_lys();});
 
     // Wczytujemy niezbędne słowniki
-    $.get({url: base_path + "GMN_POW_NMS.txt", success: function(data){
-        gmn_pow_nms_dict = JSON.parse(data);
-        }, async: false});
+    $.get({url: base_path + "GMN_POW_NMS.txt", success: function(data){gmn_pow_nms = JSON.parse(data);}, async: false});
     $.get({url: base_path + "PL_NAMES.txt", success: function(data){pl_names_dict = JSON.parse(data); }, async: false});
 
-    gmn_pow_keys = Object.keys(gmn_pow_nms_dict);
+    // Generujemy liste kluczy
+    gmn_pow_keys = Object.keys(gmn_pow_nms);
 };
 
 function disp_layer(num){
@@ -77,7 +77,7 @@ function disp_layer(num){
     var fin_lay_path = "./fin_maps/" + curr_lay_name + "/" + curr_lay_name + "_ALL_PC_4326.geojson";
 
     // Jezeli warstwa danego wojewodztwa nie jest juz widoczna to ja wczytujemy
-	if(!woj_visib[num]){
+	if (!woj_visib[num]){
 	    // Zmieniamy kolor wojewodztwa w menu
         document.getElementById(num).style.backgroundColor = curr_col;
         document.getElementById(num).style.color = font_colors[num];
@@ -97,11 +97,9 @@ function disp_layer(num){
         }});
 
         // Przesuwamy mape do wczytanej warstwy
-        geojsonLayer.on('data:loaded', function(){
-            if(map.getZoom() < 15){
-                map.fitBounds(geojsonLayer.getBounds());
-            }
-        });
+        geojsonLayer.on('data:loaded', function(){if (map.getZoom() < 14){map.fitBounds(geojsonLayer.getBounds());}});
+
+        // Dodajemy warstwe do mapy
         geojsonLayer.addTo(map);
 
         // Zapisujemy warstwe geojson w macierzy wartsw
@@ -109,7 +107,8 @@ function disp_layer(num){
 
         // Uzupelniamy wektor widocznosci
         woj_visib[num] = true;
-    }else{
+
+    } else{
         // Przywracamy pierwotny kolor przycisku w menu
         document.getElementById(num).style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
         document.getElementById(num).style.color = '#FFFFFF';
@@ -130,17 +129,79 @@ function key_down_handler(event){
     var p_txt = parent_node.value;
     var base_path = "./files/POSTCODES_TXT/";
     var auto_cmpl = document.getElementById('autoc1');
-    var c_txt;
+    var c_txt = '';
     var c_file_path;
     var pc_dict;
+    var ac_childs = auto_cmpl.children;
+    var ac_length = ac_childs.length;
 
-    if (c_key !== "Backspace"){
+    // Zapobiegamy przesuwaniu sie kursora po obszarze tekstowym
+    if (c_key == "ArrowRight" || c_key == "ArrowLeft" || c_key == "ArrowDown" || c_key == "ArrowUp"){
+        event.preventDefault()
+    }
+
+    if (c_key == "Enter" && curr_ac_pos > -1){
+        // Wywolujemy funkcje nakaladajaca polygon
+        var c_child = ac_childs.item(curr_ac_pos)
+        disp_pc(c_child.id, c_child.value);
+
+        for(var i = 0; i < auto_cmpl.children.length; i++){
+            ac_childs.item(i).style.color = "black";
+            ac_childs.item(i).style.backgroundColor = "white";
+        }
+
+        curr_ac_pos = -1;
+        return;
+
+    } else if (c_key == "ArrowDown" && ac_length > 0){
+        // Zmieniamy kolor biezacego elementu
+        if (curr_ac_pos > -1){
+            ac_childs.item(curr_ac_pos).style.color = "black";
+            ac_childs.item(curr_ac_pos).style.backgroundColor = "white";
+        }
+
+        if (curr_ac_pos == ac_length - 1){
+            curr_ac_pos = 0;
+        } else{
+            curr_ac_pos  += 1;
+        }
+
+        // Zmieniamy kolor kolejnego elementu
+        ac_childs.item(curr_ac_pos).style.color = "white";
+        ac_childs.item(curr_ac_pos).style.backgroundColor = "rgb(220, 20, 60)";
+        return;
+
+    } else if (c_key == "ArrowUp" && ac_length > 0){
+        // Zmieniamy kolor biezacego elementu
+        if (curr_ac_pos > -1){
+            ac_childs.item(curr_ac_pos).style.color = "black";
+            ac_childs.item(curr_ac_pos).style.backgroundColor = "white";
+        }
+
+        if (curr_ac_pos == 0){
+            curr_ac_pos = ac_length - 1;
+        } else{
+            curr_ac_pos -= 1;
+        }
+
+        // Zmieniamy kolor elementu
+        ac_childs.item(curr_ac_pos).style.color = "white";
+        ac_childs.item(curr_ac_pos).style.backgroundColor = "rgb(220, 20, 60)";
+        return;
+
+    } else if (c_key == "ArrowRight" || c_key == "ArrowLeft"){
+        return;
+    } else if (c_key !== "Backspace" && c_key !== "ArrowLeft" && c_key !== "ArrowRight" && c_key !== "ArrowUp"
+        && c_key !== "ArrowDown"){
         c_txt = p_txt + c_key;
-    } else{
+    } else if (c_key == "Backspace"){
         c_txt = p_txt.substring(0, p_txt.length - 1);
+    } else{
+        c_txt = p_txt;
     }
 
     if (c_txt.match("^[0-9]{1,2}$|^[0-9]{2}-[0-9]{0,3}$") != null){
+
         // Ustalamy link do pliku z kodami pocztowymi
         if (c_txt.length == 1){
             c_file_path = base_path + "PC_" + c_txt +  "0.txt";
@@ -156,15 +217,17 @@ function key_down_handler(event){
 
         // Czyścimy dotychczasowe obiekty na liście autocomplete
         clear_not_vis_lys();
-        pc_nums_dict = {}
+        pc_nums_dict = {};
         var count = 0;
 
+        // Przechodzimy przez liste kluczy i szukamy pasujacych kodow pocztowych
         for(var i = 0; i < pc_dict_keys.length; i++){
 
+            // Definiujemy biezacy kod pocztowy
             var c_pc_gmn = pc_dict_keys[i];
             var c_pc = c_pc_gmn.slice(0, c_pc_gmn.indexOf("_"))
 
-            if (pc_dict_keys[i].startsWith(c_txt) && count <= 10 && !(c_pc_gmn in autofill_dict)){
+            if (pc_dict_keys[i].startsWith(c_txt) && count <= max_ac_len && !(c_pc_gmn in autofill_dict)){
                 // Słownik parametrow ksztaltu
                 plg_list = pc_dict[c_pc_gmn];
 
@@ -175,11 +238,13 @@ function key_down_handler(event){
                 var fin_polys_list = [];
                 var fin_nums_list = [];
 
-                 for(var j = 0; j < plg_list.length; j++){
+                // Dodajemy wielokat do listy
+                for(var j = 0; j < plg_list.length; j++){
                     fin_polys_list.push(plg_list[j]["Polygon"]);
                     fin_nums_list.push(plg_list[j]["PC_NUM"]);
                 }
 
+                // Dodajemy liste wielokatow do slownika autouzupelnienia
                 autofill_dict[c_pc_gmn] = fin_polys_list;
                 pc_nums_dict[c_pc_gmn] = fin_nums_list;
 
@@ -187,7 +252,7 @@ function key_down_handler(event){
                 if (visib_pc.indexOf(c_pc_gmn) < 0){
                     inn_txt = "&nbsp; &nbsp;<strong>&#x293F; " + c_txt + "</strong>" +
                         c_pc.substring(c_txt.length, c_pc.length) + " (gm. " + pl_names_dict[gmn_name] + ")";
-                }else{
+                } else{
                     inn_txt = "<strong>&nbsp; &nbsp;&#9989; " + c_txt + c_pc.substring(c_txt.length, c_pc.length) +
                         " (gm. " + pl_names_dict[gmn_name] + ")</strong>";
                 }
@@ -203,6 +268,7 @@ function key_down_handler(event){
                 b.setAttribute("onclick", "javascript:disp_pc(this.id, this.value);");
                 auto_cmpl.appendChild(b);
                 count++;
+                curr_ac_pos = -1;
             }
         }
     } else{
@@ -212,6 +278,8 @@ function key_down_handler(event){
 };
 
 function disp_pc(pc_code, str_val){
+    // Funkcja wyswietlajaca wybrane kody pocztowe
+
     var gmn_name = str_val.slice(str_val.indexOf("gm.") + 4, str_val.length - 1);
     var geojson_list = autofill_dict[pc_code];
     var pc_nums_list = pc_nums_dict[pc_code]
@@ -224,6 +292,7 @@ function disp_pc(pc_code, str_val){
     var c_pc = pc_code.slice(0, pc_code.indexOf("_"))
 
     if(pc_inds < 0){
+
         // Parsujemy WKT kazdego wielokata z listy i dodajemy go do grupy warstw (layerGroup)
         for(var i = 0; i < geojson_list.length; i++){
             // Tworzymy warstwę
@@ -253,7 +322,9 @@ function disp_pc(pc_code, str_val){
         // Przypisujemy wartosc wyszukiwarki biezaca wartosc przycisku
         document.getElementById('searchInput').value = str_val;
         c_autof.innerHTML = "<b>&nbsp; &nbsp;&#9989; " + c_autof_val + "</b>"
-    }else{
+
+    } else{
+
         // Usuwamy wielokat z mapy i z list
         map.removeLayer(pc_codes[pc_inds]);
         visib_pc.splice(pc_inds, 1);
@@ -266,10 +337,16 @@ function disp_pc(pc_code, str_val){
         // Czyścimy z formularza autosugestii warstwy, ktoreni nie powinny byc widoczne
         clear_not_vis_lys();
     }
+
+    // Zmieniamy kolor przycisku czyszczenia na domyslny
+    if (document.getElementById('autoc1').children.length == 0){
+        document.getElementById('clr_btn').style.backgroundColor = 'inherit';
+    }
 };
 
 function clear_pc_lyrs(){
     // Funkcja czyści wszystkie warstwy pojedynczych kodow pocztowych
+
     visib_pc = [];
     autofill_dict = {};
     pc_nums_dict = {};
@@ -281,17 +358,17 @@ function clear_pc_lyrs(){
 };
 
 function clear_not_vis_lys(){
-    // Funkcja czyści warstwy, ktore nie sa na lisicie warstw widocznych
+    // Funkcja czyści warstwy, ktore nie sa na liscie warstw widocznych
 
     var ac_childs = document.getElementById('autoc1').children;
 
     for(var i = 0; i < ac_childs.length;) {
         var c_pc = ac_childs[i].id;
 
-        if(visib_pc.indexOf(c_pc) < 0){
+        if (visib_pc.indexOf(c_pc) < 0){
             ac_childs[i].remove();
             delete autofill_dict[c_pc];
-        }else{
+        } else{
             i++;
         }
     }
