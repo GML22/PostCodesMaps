@@ -21,8 +21,10 @@
         <div class="dropdown-content" id="drop1"></div>
     </div>
     <div class="searchDiv">
-        <input class="controls" id="searchInput" placeholder="Specify Polish postcode (in the format '00-000')"
-               autocomplete="off" onkeydown='key_down_handler(event)' type="search">
+        <input autocomplete="off" class="controls" id="searchInput" onkeydown='key_down_handler(event)'
+               onkeyup='key_up_handler(event.key, this.value)'
+               placeholder="Specify municipality name or postcode (in the format '00-000')" spellcheck="false"
+               type="search">
         <div class="autocomplete-content" id="autoc1"></div>
         <button class="clearbtn" id="clr_btn" onclick="javascript:clear_pc_lyrs();" title="Clear all postcodes polygons"
                 type="button">&#10008;

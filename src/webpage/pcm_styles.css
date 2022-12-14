@@ -113,7 +113,7 @@ a:hover, .dropbtn:hover, #home:hover{
 	font-style: italic;
 	text-overflow: ellipsis;
 	margin-top: 0.35vw;
-	width: 20vw;
+	width: 27vw;
 	height: 2.5vw;
 	margin-right: 1vw;
 	cursor: pointer;
@@ -124,7 +124,7 @@ a:hover, .dropbtn:hover, #home:hover{
 	display: none;
 	position: absolute;
 	z-index: 1;
-	width: 20vw;
+	width: 27vw;
 	margin-top: 0.05vw;
 	background-color: rgb(255, 255, 255);
     font-size: 0.9vw;
