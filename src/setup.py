@@ -3,16 +3,16 @@ from setuptools import setup
 setup(
     name='postcodesmaps',
     version='1.0',
-    description='GeocoderPL is an application written in Python, which can be used for geocoding address points in ' +
-                'Poland along with the possibility to display basic information about a given address point and the ' +
-                'building assigned to this address. GeocoderPL has a form of search engine with three map layers: ' +
-                'OpenStreetMap, Google Maps and Stamens Map.',
+    description='PostCodesMaps is a Python-written application that creates post code maps of regions in Poland based' +
+                ' on a set of address points from the Polish National Register of Boundaries Database (a.k.a. PRG ' +
+                'database). As part of PostCodeMaps, a website was created that enables the visualization of the ' +
+                'generated post codes by overlaying them on Google maps.',
     author='Mateusz Gomulski',
     author_email='mateusz.gomulski@gmail.com',
     license="MIT License",
-    keywords="search-engine geocoding numpy pyqt5 geospatial sqlite3 gdal-python superpermutation folium-maps",
-    url="https://github.com/GML22/GeocoderPL",
+    keywords="postal codes maps Poland python numpy javascript leafletjs search-engine sqlalchemy gdal-python",
+    url="https://github.com/GML22/PostCodesMaps",
     packages=['postcodesmaps'],
-    install_requires=['folium', 'numpy', 'pyqt5', 'unidecode', 'pyproj', 'lxml', 'geocoder', 'pandas', 'matplotlib',
-                      'setuptools', 'sqlalchemy', 'python-dotenv'],
+    install_requires=['setuptools', 'sqlalchemy', 'python-dotenv', 'fiona', 'numpy', 'pandas', 'lxml', 'matplotlib',
+                      'scipy', 'shapely', 'tqdm', 'unidecode'],
 )
