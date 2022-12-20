@@ -32,14 +32,14 @@ from sqlalchemy.orm import Session
 from tqdm import tqdm
 from unidecode import unidecode
 
-from prg_db import PRG, SQL_ENGINE
+from pcm_db import PRG, SQL_ENGINE
 
 
 def create_logger(name: str) -> logging.Logger:
     """ Function that creates logging file """
 
     # Deklaracja najwazniejszych sciezek
-    parent_path = os.path.abspath(os.path.join(os.path.join(os.getcwd(), os.pardir), os.pardir))
+    parent_path = os.path.join(os.getcwd()[:os.getcwd().index("PostCodesMaps")], "PostCodesMaps")
 
     # Tworzymy plik loggera
     logging.basicConfig(filename=os.path.join(parent_path, "files\\logs_pcm.log"), level=logging.DEBUG,

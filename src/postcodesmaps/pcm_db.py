@@ -10,8 +10,9 @@ from sqlalchemy.orm import declarative_base
 BASE = declarative_base()
 
 # Wczytujemy zmienne środowiskowe projektu
-load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
-os.environ["PARENT_PATH"] = os.path.abspath(os.path.join(os.path.join(os.getcwd(), os.pardir), os.pardir))
+parent_path = os.path.join(os.getcwd()[:os.getcwd().index("PostCodesMaps")], "PostCodesMaps")
+load_dotenv(os.path.join(parent_path, ".env"))
+os.environ["PARENT_PATH"] = parent_path
 
 # Deklarujemy silnik SQL
 SQL_ENGINE = sa.create_engine("sqlite:///" + os.path.join(os.environ["PARENT_PATH"], os.environ["DB_PATH"]))
