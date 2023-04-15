@@ -1,4 +1,4 @@
-""" __init_.py module """
+""" Init module of the PostCodesMaps project """
 
 from . import pcm_db, pcm_parser, pcm_utilities
 

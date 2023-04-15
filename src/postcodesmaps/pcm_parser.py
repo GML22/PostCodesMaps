@@ -1,7 +1,7 @@
-""" Module that parses data from PRG database """
+""" XML Parser module of the PostCodesMaps project """
 
 from abc import ABC
-from functools import lru_cache
+from typing import Tuple
 
 from pcm_utilities import *
 
@@ -9,7 +9,16 @@ from pcm_utilities import *
 class PRGDataParser(ABC):
     """ Class that parses adress points from PRG database to SQLAlchemy database """
 
-    def __init__(self, xml_path: str, tags_tuple: tuple, event_type: str) -> None:
+    def __init__(self, xml_path: str, tags_tuple: Tuple[str, ...], event_type: str) -> None:
+        """
+        Method that creates objects from a class "PRGDataParser"
+
+        :param xml_path: Path of a given XML file
+        :param tags_tuple: Tuple containig XML tags
+        :param event_type: Type of event in XML file
+        :return: The method does not return any values
+        """
+
         self.xml_path = xml_path
         self.tags_tuple = tags_tuple
         self.event_type = event_type
@@ -21,7 +30,12 @@ class PRGDataParser(ABC):
         self.parse_xml()
 
     def check_path(self) -> None:
-        """" Method that checks if path to file is valid """
+        """
+        Method that checks if path to file is valid
+
+        :return: The method does not return any values
+        """
+
         if not os.path.isfile(self.xml_path):
             raise Exception("Pod adresem: '" + self.xml_path + "' nie ma pliku '" + os.environ['PRG_NAME'] +
                             "'. Pobierz ten plik ze strony: '" + os.environ['PRG_LINK'] +
@@ -29,7 +43,11 @@ class PRGDataParser(ABC):
 
     @time_decorator
     def create_teryt_dict(self) -> None:
-        """ Method that creates TERYT dictionary """
+        """
+        Method that creates TERYT dictionary
+
+        :return: The method does not return any values
+        """
 
         # Wczytujemy slowniki TERYT z dysku
         self.woj_teryt_dict = csv_to_dict(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_WOJ_PATH']), {})
@@ -49,7 +67,11 @@ class PRGDataParser(ABC):
 
     @time_decorator
     def parse_xml(self) -> None:
-        """ Method that parses xml file and saves data to SQL database """
+        """
+        Method that parses xml file and saves data to SQL database
+
+        :return: The method does not return any values
+        """
 
         # Definiujemy podstawowe parametry
         x_path, x_filename = os.path.split(self.xml_path)
@@ -65,7 +87,12 @@ class PRGDataParser(ABC):
                     self.create_points_list(xml_contex)
 
     def create_points_list(self, xml_contex: etree.iterparse) -> None:
-        """ Creating list of data points """
+        """
+        Method that creates list of data points
+
+        :param xml_contex: Root of XML data tree
+        :return: The method does not return any values
+        """
 
         # Definiujemy podstawowe parametry
         c_ind = 0
@@ -119,31 +146,3 @@ class PRGDataParser(ABC):
         with Session(SQL_ENGINE) as db_session:
             db_session.bulk_save_objects(points_list)
             db_session.commit()
-
-
-@lru_cache
-def get_corr_reg_name(curr_name: str) -> str:
-    """ Function that corrects wrong regions names """
-
-    # Specjalny wyjatek, bo w danych PRG występuje czasem powiat "JELENIOGORSKI", a od 2021 roku powiat ten nazywa sie
-    # "KARKONOSKI", wiec trzeba to poprawic
-    if curr_name == "JELENIOGORSKI":
-        return "KARKONOSKI"
-
-    # Kolejny wyjatek, bo w danych PRG występuje czasem gmina "SITKOWKA-NOWINY", a od 2021 roku gmina ta nazywa sie
-    # "NOWINY", wiec trzeba to poprawic
-    elif curr_name == "SITKOWKA-NOWINY":
-        return "NOWINY"
-
-    # Kolejny wyjatek, bo w danych PRG występuje czasem gmina "SLUPIA (KONECKA)", a od 2018 roku gmina ta nazywa sie
-    # "SLUPIA KONECKA", wiec trzeba to poprawic
-    elif curr_name == "SLUPIA (KONECKA)":
-        return "SLUPIA KONECKA"
-
-    # Kolejny wyjatek, bo w danych PRG występuje czasem gmina "SLUPIA (JEDRZEJOWSKA)", a oficjalna nazwa tej gminy,
-    # według kodów TERYT, to "SLUPIA", wiec trzeba to poprawic
-    elif curr_name == "SLUPIA (JEDRZEJOWSKA)":
-        return "SLUPIA"
-
-    else:
-        return curr_name

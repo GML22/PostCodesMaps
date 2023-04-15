@@ -1,4 +1,4 @@
-""" __main_.py module """
+""" Main module of the PostCodesMaps project """
 
 import sqlalchemy as sa
 

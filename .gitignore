@@ -1,6 +1,5 @@
 *.zip
 *.json
-*.geojson
 *.db
 *.npy
 *.pyc
@@ -11,7 +10,7 @@
 *.xml
 *.iml
 *.log
-/files/
+/files/SHAPES
 /layers/
-/fin_maps/
+/fin_maps/00_POLSKA
 /.idea/

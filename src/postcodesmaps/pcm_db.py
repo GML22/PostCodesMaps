@@ -1,4 +1,4 @@
-""" Module that defines SQL database classes """
+""" Module that defines SQL database class in the PostCodesMaps project """
 
 import os
 
@@ -19,7 +19,7 @@ SQL_ENGINE = sa.create_engine("sqlite:///" + os.path.join(os.environ["PARENT_PAT
 
 
 class PRG(BASE):
-    """ Class that defines columns of 'PRG_TABLE' """
+    """ Class that defines columns of "PRG_TABLE" """
 
     # Defniujemy nazwę tabeli
     __tablename__ = "PRG_TABLE"
@@ -32,11 +32,27 @@ class PRG(BASE):
     dlugosc = sa.Column('DLUGOSC', sa.Integer, nullable=False)
 
     def __init__(self, kod_teryt: str, kod_pocztowy: str, szerokosc: float, dlugosc: float) -> None:
+        """
+        Method that creates objects from a class "PRG"
+
+        :param kod_teryt: TERYT code of the region in which the address point is located
+        :param kod_pocztowy: Postcode where the address point is located
+        :param szerokosc: Longitude of a given address point
+        :param dlugosc: Latitude of a given address point
+        :return: The method does not return any values
+        """
+
         self.kod_teryt = kod_teryt
         self.kod_pocztowy = kod_pocztowy
         self.szerokosc = szerokosc
         self.dlugosc = dlugosc
 
     def __repr__(self) -> str:
+        """
+        Method that represents an objects in a class "PRG" as a string
+
+        :return: String that represents objects of the class "PRG"
+        """
+
         print_str = "<PRG('%s', '%s', '%s', '%s')>"
         return print_str % (self.kod_teryt, self.kod_pocztowy, self.szerokosc, self.dlugosc)

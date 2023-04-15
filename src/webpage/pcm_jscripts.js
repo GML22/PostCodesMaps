@@ -25,6 +25,18 @@ var mtch_gmns_pows;
 var pl_names_dict;
 var gmn_pow_nms;
 var map;
+var totalSeconds = 0;
+
+function update_timer(){
+    // Funkcja aktualizaująca timer
+
+    // Naliczamy 1 setną sekundy
+    ++totalSeconds;
+
+    // Dodajemy informacje o czasie
+    var fin_time = totalSeconds / 100;
+    $('h2').text(fin_time.toFixed(1));
+};
 
 function initMap(){
     // Funkcja generujaca glowna mape oraz uzupelniajaca menu
@@ -90,6 +102,8 @@ function disp_layer(num){
 	    // Zmieniamy kolor wojewodztwa w menu
         document.getElementById(num).style.backgroundColor = curr_col;
         document.getElementById(num).style.color = font_colors[num];
+        document.getElementById('loading').style.display ='block';
+        var myInterval = setInterval(update_timer, 10);
 
         // Tworzymy warstwe geojson i dodajemy ja do mapy
         var geojsonLayer = new L.GeoJSON.AJAX(fin_lay_path, {style: {weight: 5, opacity: 1.0, color: curr_col},
@@ -106,7 +120,18 @@ function disp_layer(num){
         }});
 
         // Przesuwamy mape do wczytanej warstwy
-        geojsonLayer.on('data:loaded', function(){if (map.getZoom() < 16){map.fitBounds(geojsonLayer.getBounds());}});
+        geojsonLayer.on('data:loaded', function(){
+
+            // Chowamy ekran ładowania
+            document.getElementById('loading').style.display ='none';
+
+            // Przesuwamy mape do odpowiedniej czesci
+            map.fitBounds(geojsonLayer.getBounds());
+
+            // Czyścimy timer
+            clearInterval(myInterval);
+            totalSeconds = 0;
+        });
 
         // Dodajemy warstwe do mapy
         geojsonLayer.addTo(map);

@@ -1,0 +1,35 @@
+\indexentry{module@\spxentry{module}!pcm\_db@\spxentry{pcm\_db}|hyperpage}{3}
+\indexentry{pcm\_db@\spxentry{pcm\_db}!module@\spxentry{module}|hyperpage}{3}
+\indexentry{PRG (class in pcm\_db)@\spxentry{PRG}\spxextra{class in pcm\_db}|hyperpage}{3}
+\indexentry{\_\_init\_\_() (pcm\_db.PRG method)@\spxentry{\_\_init\_\_()}\spxextra{pcm\_db.PRG method}|hyperpage}{3}
+\indexentry{\_\_repr\_\_() (pcm\_db.PRG method)@\spxentry{\_\_repr\_\_()}\spxextra{pcm\_db.PRG method}|hyperpage}{3}
+\indexentry{module@\spxentry{module}!pcm\_parser@\spxentry{pcm\_parser}|hyperpage}{5}
+\indexentry{pcm\_parser@\spxentry{pcm\_parser}!module@\spxentry{module}|hyperpage}{5}
+\indexentry{PRGDataParser (class in pcm\_parser)@\spxentry{PRGDataParser}\spxextra{class in pcm\_parser}|hyperpage}{5}
+\indexentry{\_\_init\_\_() (pcm\_parser.PRGDataParser method)@\spxentry{\_\_init\_\_()}\spxextra{pcm\_parser.PRGDataParser method}|hyperpage}{5}
+\indexentry{\_\_weakref\_\_ (pcm\_parser.PRGDataParser attribute)@\spxentry{\_\_weakref\_\_}\spxextra{pcm\_parser.PRGDataParser attribute}|hyperpage}{5}
+\indexentry{check\_path() (pcm\_parser.PRGDataParser method)@\spxentry{check\_path()}\spxextra{pcm\_parser.PRGDataParser method}|hyperpage}{5}
+\indexentry{create\_points\_list() (pcm\_parser.PRGDataParser method)@\spxentry{create\_points\_list()}\spxextra{pcm\_parser.PRGDataParser method}|hyperpage}{5}
+\indexentry{create\_teryt\_dict() (pcm\_parser.PRGDataParser method)@\spxentry{create\_teryt\_dict()}\spxextra{pcm\_parser.PRGDataParser method}|hyperpage}{5}
+\indexentry{parse\_xml() (pcm\_parser.PRGDataParser method)@\spxentry{parse\_xml()}\spxextra{pcm\_parser.PRGDataParser method}|hyperpage}{6}
+\indexentry{module@\spxentry{module}!pcm\_utilities@\spxentry{pcm\_utilities}|hyperpage}{7}
+\indexentry{pcm\_utilities@\spxentry{pcm\_utilities}!module@\spxentry{module}|hyperpage}{7}
+\indexentry{clear\_xml\_node() (in module pcm\_utilities)@\spxentry{clear\_xml\_node()}\spxextra{in module pcm\_utilities}|hyperpage}{7}
+\indexentry{create\_coords\_transform() (in module pcm\_utilities)@\spxentry{create\_coords\_transform()}\spxextra{in module pcm\_utilities}|hyperpage}{7}
+\indexentry{create\_geom\_dict() (in module pcm\_utilities)@\spxentry{create\_geom\_dict()}\spxextra{in module pcm\_utilities}|hyperpage}{7}
+\indexentry{create\_geom\_refs\_dict() (in module pcm\_utilities)@\spxentry{create\_geom\_refs\_dict()}\spxextra{in module pcm\_utilities}|hyperpage}{8}
+\indexentry{create\_logger() (in module pcm\_utilities)@\spxentry{create\_logger()}\spxextra{in module pcm\_utilities}|hyperpage}{8}
+\indexentry{create\_pc\_shps() (in module pcm\_utilities)@\spxentry{create\_pc\_shps()}\spxextra{in module pcm\_utilities}|hyperpage}{8}
+\indexentry{create\_postal\_codes\_shps() (in module pcm\_utilities)@\spxentry{create\_postal\_codes\_shps()}\spxextra{in module pcm\_utilities}|hyperpage}{8}
+\indexentry{csv\_to\_dict() (in module pcm\_utilities)@\spxentry{csv\_to\_dict()}\spxextra{in module pcm\_utilities}|hyperpage}{8}
+\indexentry{get\_corr\_reg\_name() (in module pcm\_utilities)@\spxentry{get\_corr\_reg\_name()}\spxextra{in module pcm\_utilities}|hyperpage}{9}
+\indexentry{merge\_all\_shps\_save() (in module pcm\_utilities)@\spxentry{merge\_all\_shps\_save()}\spxextra{in module pcm\_utilities}|hyperpage}{9}
+\indexentry{mult\_pc\_zones\_shps() (in module pcm\_utilities)@\spxentry{mult\_pc\_zones\_shps()}\spxextra{in module pcm\_utilities}|hyperpage}{9}
+\indexentry{prepare\_merging() (in module pcm\_utilities)@\spxentry{prepare\_merging()}\spxextra{in module pcm\_utilities}|hyperpage}{10}
+\indexentry{read\_wod\_pow\_shapes() (in module pcm\_utilities)@\spxentry{read\_wod\_pow\_shapes()}\spxextra{in module pcm\_utilities}|hyperpage}{10}
+\indexentry{rmv\_isl\_pc() (in module pcm\_utilities)@\spxentry{rmv\_isl\_pc()}\spxextra{in module pcm\_utilities}|hyperpage}{10}
+\indexentry{rmv\_prg\_outlyrs() (in module pcm\_utilities)@\spxentry{rmv\_prg\_outlyrs()}\spxextra{in module pcm\_utilities}|hyperpage}{10}
+\indexentry{rmv\_sml\_ovrlp\_polygs() (in module pcm\_utilities)@\spxentry{rmv\_sml\_ovrlp\_polygs()}\spxextra{in module pcm\_utilities}|hyperpage}{11}
+\indexentry{save\_merged\_shps() (in module pcm\_utilities)@\spxentry{save\_merged\_shps()}\spxextra{in module pcm\_utilities}|hyperpage}{11}
+\indexentry{sngl\_pc\_zone\_shp() (in module pcm\_utilities)@\spxentry{sngl\_pc\_zone\_shp()}\spxextra{in module pcm\_utilities}|hyperpage}{11}
+\indexentry{time\_decorator() (in module pcm\_utilities)@\spxentry{time\_decorator()}\spxextra{in module pcm\_utilities}|hyperpage}{11}

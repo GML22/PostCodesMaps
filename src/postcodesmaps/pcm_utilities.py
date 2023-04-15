@@ -10,13 +10,16 @@ import pickle
 import re
 import time
 import zipfile
+from functools import lru_cache
 from itertools import groupby
+from typing import Dict, List, Any, Callable
 
 import fiona
 import numpy as np
 import ogr2ogr
 import pandas as pd
 import pyproj
+import shapely
 from fiona.crs import from_epsg
 from lxml import etree
 from matplotlib import path
@@ -36,7 +39,12 @@ from pcm_db import PRG, SQL_ENGINE
 
 
 def create_logger(name: str) -> logging.Logger:
-    """ Function that creates logging file """
+    """
+    Function that creates logging file
+
+    :param name: Name of logger
+    :return: Logger object
+    """
 
     # Deklaracja najwazniejszych sciezek
     parent_path = os.path.join(os.getcwd()[:os.getcwd().index("PostCodesMaps")], "PostCodesMaps")
@@ -63,12 +71,24 @@ def create_logger(name: str) -> logging.Logger:
     return logger
 
 
-def time_decorator(func):
-    """ Decorator that logs information about time of function execution """
+def time_decorator(func) -> Callable:
+    """
+    Decorator that logs information about time of function execution
+
+    :param func: Function call that should be wrapped
+    :return: Time wrapper function call
+    """
 
     @functools.wraps(func)
     def time_wrapper(*args, **kwargs):
-        """ Function that calculates time of processing individual functions """
+        """
+        Wrapper that calculates function execution time
+
+        :param args: First set of arguments of wrapped function
+        :param kwargs: Second set of arguments of wrapped function
+        :return: Values returned by a wrapped function
+        """
+
         start_time = time.time()
         logger = logging.getLogger('root')
         logger.info("0. Rozpoczęcie wykonywania funkcji '" + func.__name__ + "'")
@@ -84,7 +104,13 @@ def time_decorator(func):
 
 
 def clear_xml_node(curr_node: etree.Element) -> None:
-    """ Function that clears unnecessary XML nodes from RAM memory """
+    """
+    Function that clears unnecessary XML nodes from RAM memory
+
+    :param curr_node: Current XML node
+    :return: Function does not return any values
+    """
+
     curr_node.clear()
 
     for ancestor in curr_node.xpath('ancestor-or-self::*'):
@@ -92,8 +118,14 @@ def clear_xml_node(curr_node: etree.Element) -> None:
             del ancestor.getparent()[0]
 
 
-def csv_to_dict(c_path: str, pl_names_dict: dict) -> dict:
-    """ Function that imports CSV file and creates dictionairy from first two columns of that file """
+def csv_to_dict(c_path: str, pl_names_dict: Dict[str, str]) -> Dict[str, str]:
+    """
+    Function that imports CSV file and creates dictionairy from first two columns of that file
+
+    :param c_path: Path of the CSV file that should be read to dictionary
+    :param  pl_names_dict: Dictionary containing Polish names of regions
+    :return: Dictionary read from CSV file and corrected using "pl_names_dict" dictionairy
+    """
 
     try:
         x_kod = pd.read_csv(c_path, sep=";", dtype=str, engine='c', header=None, low_memory=False,
@@ -115,7 +147,11 @@ def csv_to_dict(c_path: str, pl_names_dict: dict) -> dict:
 
 @time_decorator
 def create_postal_codes_shps() -> None:
-    """ Function that creates shapefiles of postal codes zones """
+    """
+    Function that creates shapefiles of postal codes zones
+
+    :return: Function does not return any values
+    """
 
     # Wczytujemy słownik kodów teryt i kodów pocztowych
     with open(os.path.join(os.environ["PARENT_PATH"], os.environ['TERYT_PC_PATH']), 'rb') as f:
@@ -158,9 +194,18 @@ def create_postal_codes_shps() -> None:
 
 
 @time_decorator
-def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict: dict, fin_schema: dict,
-                     curr_pc: list):
-    """ Function that merges postcodes shapefiles by provinces and save them to the hard disk """
+def save_merged_shps(shp_fold: str, wod_pow_shape: shapely.geometry.Polygon, teryt_gmn_paths_dict: Dict[str, List[Any]],
+                     fin_schema: Dict[str, Any], curr_pc: List[int]) -> None:
+    """
+    Function that merges postcodes shapefiles by provinces and save them to the hard disk
+
+    :param shp_fold: The path to the folder where the shapefiles will be saved
+    :param wod_pow_shape: Polygons representing surface water shapes
+    :param teryt_gmn_paths_dict: Dictionairy with TERYT codes and boundary paths of municipalities
+    :param fin_schema: Dictionairy containing final parameters of SHP files
+    :param curr_pc: List for counting address points for a given postcode
+    :return: Function does not return any values
+    """
 
     # Tworzymy ściezke do wielokatow kodow pocztowych wv formacie TXT
     txt_fold = os.path.join(os.environ["PARENT_PATH"], os.environ['PC_TXT_FOLD'])
@@ -309,9 +354,22 @@ def save_merged_shps(shp_fold: str, wod_pow_shape: Polygon, teryt_gmn_paths_dict
                       fin_srs, "-lco", coords_prec, '-nln', fin_name])
 
 
-def merge_all_shps_save(mrgd_plg_path_shp: str, mrgd_plg_path_geoj: str, pc_dict: dict, all_pl_pc_dict: dict,
-                        fin_schema: dict, fin_srs: str, coords_prec: str, add_pts_nums: dict):
-    """ Function that merges all polygons of post codes areas and saves them to files .shp and .geojson """
+def merge_all_shps_save(mrgd_plg_path_shp: str, mrgd_plg_path_geoj: str, pc_dict: Dict[str, List[Any]],
+                        all_pl_pc_dict: Dict[str, Dict[Any, Any]], fin_schema: Dict[str, Any], fin_srs: str,
+                        coords_prec: str, add_pts_nums: Dict[str, Dict[Any, Any]]) -> None:
+    """
+    Function that merges all polygons of post codes areas and saves them to files .shp and .geojson
+
+    :param mrgd_plg_path_shp: SHP path under which merged polygon files are to be saved
+    :param mrgd_plg_path_geoj: GEOJSON path under which merged polygon files are to be saved
+    :param pc_dict: Dictionary of current polygons
+    :param all_pl_pc_dict: Dictionary of all polygons
+    :param fin_schema: Dictionairy containing final parameters of SHP files
+    :param fin_srs: String containing the name of the final coordinate system
+    :param coords_prec: String containing final precison of coordinates
+    :param add_pts_nums: Dictionary containing the number of address points and the area of a given municipality
+    :return: Function does not return any values
+    """
 
     tq_desc = 'Merging postcodes shapes and saving them to the hard drive: '
     fin_polygs_list = []
@@ -381,8 +439,17 @@ def merge_all_shps_save(mrgd_plg_path_shp: str, mrgd_plg_path_geoj: str, pc_dict
     # Opcja "COORDINATE_PRECISION=5" - redukujemy dokladnosc koordynatów do 5 miejsc po przecinku (do okolo 1 metra)
 
 
-def prepare_merging(fin_geom_dict: dict, wod_pow_shape: Polygon, pc_dict: dict, curr_pc: list):
-    """ Function that prepares postcodes polygons for merging """
+def prepare_merging(fin_geom_dict: Dict[str, Dict[Any, Any]], wod_pow_shape: shapely.geometry.Polygon,
+                    pc_dict: Dict[str, List[Any]], curr_pc: List[int]) -> None:
+    """
+    Function that prepares postcodes polygons for merging
+
+    :param fin_geom_dict: Dictionary with basic parameters for a given region
+    :param wod_pow_shape: Polygons representing surface water shapes
+    :param pc_dict: Dictionary of current polygons
+    :param curr_pc: List for counting address points for a given postcode
+    :return: Function does not return any values
+    """
 
     # Pattern walidujacy kod pocztowy
     pc_pattern = re.compile(r"\d{2}-\d{3}")
@@ -494,8 +561,13 @@ def prepare_merging(fin_geom_dict: dict, wod_pow_shape: Polygon, pc_dict: dict, 
             curr_pc[0] += 1
 
 
-def rmv_sml_ovrlp_polygs(fin_geom_dict: dict):
-    """ Function that removes too small and overlapping polygons from dictionary 'fin_geom_dict' """
+def rmv_sml_ovrlp_polygs(fin_geom_dict: Dict[str, Dict[Any, Any]]) -> None:
+    """
+    Function that removes too small and overlapping polygons from dictionary "fin_geom_dict"
+
+    :param fin_geom_dict: Dictionary with basic parameters for a given region
+    :return: Function does not return any values
+    """
 
     for teryt_code, teryt_dict in tqdm(fin_geom_dict.items(), desc='Removing too small, overlapping shapes: '):
         if teryt_dict["NUM_PC"] > 1:
@@ -520,8 +592,17 @@ def rmv_sml_ovrlp_polygs(fin_geom_dict: dict):
             teryt_dict["GEOM_LIST"] = geom_arr[rmv_mask, :]
 
 
-def create_geom_dict(fin_geom_dict: dict, teryt_arr: np.ndarray, teryt_gmn_paths_dict: dict, gmn_teryt_dict: dict):
-    """" Function that creates dictionairy of all polygons in current province """
+def create_geom_dict(fin_geom_dict: Dict[str, Dict[Any, Any]], teryt_arr: np.ndarray,
+                     teryt_gmn_paths_dict: Dict[str, List[Any]], gmn_teryt_dict: Dict[str, str]) -> None:
+    """
+    Function that creates dictionairy of all polygons in current province
+
+    :param fin_geom_dict: Dictionary with basic parameters for a given region
+    :param teryt_arr: Numpy array cotaining paths of shapefiles
+    :param teryt_gmn_paths_dict: Dictionairy with TERYT codes and border points paths of municipalities
+    :param gmn_teryt_dict: Dictionary with TERYT codes and names of municipalities
+    :return: Function does not return any values
+    """
 
     for shp_path, teryt_code in tqdm(teryt_arr, desc='Creating dictionairy of shapefiles for current province: '):
         # Bieżący kod pocztowy
@@ -559,8 +640,16 @@ def create_geom_dict(fin_geom_dict: dict, teryt_arr: np.ndarray, teryt_gmn_paths
             fin_geom_dict[teryt_code]["GEOM_LIST"] = [curr_code]
 
 
-def sngl_pc_zone_shp(teryt_code: str, paths_list: list, c_post_cods: list, shp_fold: str):
-    """ Function that creates single shapefile of postal codes zones for single municipality """
+def sngl_pc_zone_shp(teryt_code: str, paths_list: List[Any], c_post_cods: List[str], shp_fold: str) -> None:
+    """
+    Function that creates single shapefile of postal codes zones for single municipality
+
+    :param teryt_code: TERYT code of the region
+    :param paths_list: List of points representing the boundaries of the region
+    :param c_post_cods: List of expected postcodes for giving region
+    :param shp_fold: Path where the Shapefile will be saved
+    :return: Function does not return any values
+    """
 
     # Zapisujemy nowy plik Shapefile na dysku
     c_schema = {'geometry': 'Polygon', 'properties': {'Value': 'int', 'Name': 'str'}}
@@ -572,8 +661,18 @@ def sngl_pc_zone_shp(teryt_code: str, paths_list: list, c_post_cods: list, shp_f
             c.write({'geometry': mapping(geom), 'properties': {'Value': 1, "Name": c_post_cods[0]}})
 
 
-def mult_pc_zones_shps(teryt_code: str, paths_list: list, c_post_cods: list, prg_cols: list, shp_fold: str):
-    """ Function that creates multiple shapefiles of postcodes zones for single municipality """
+def mult_pc_zones_shps(teryt_code: str, paths_list: List[Any], c_post_cods: List[str], prg_cols: List[Any],
+                       shp_fold: str) -> None:
+    """
+    Function that creates multiple shapefiles of postcodes zones for single municipality
+
+    :param teryt_code: TERYT code of the region
+    :param paths_list: List of points representing the boundaries of the region
+    :param c_post_cods: List of expected postcodes for giving region
+    :param prg_cols: List with postcode, latitude and longitude of a given address point
+    :param shp_fold: Path where the Shapefile will be saved
+    :return: Function does not return any values
+    """
 
     # Lista punktów adresowych z bazy PRG dla danego kodu TERYT
     with Session(SQL_ENGINE) as db_session:
@@ -646,8 +745,14 @@ def mult_pc_zones_shps(teryt_code: str, paths_list: list, c_post_cods: list, prg
             sngl_pc_zone_shp(teryt_code, [c_points], curr_code, shp_fold)
 
 
-def rmv_isl_pc(fin_pc_arr: np.ndarray, prg_pts_ids: np.ndarray):
-    """ Function that removes isolated postal codes from the area of other postal codes """
+def rmv_isl_pc(fin_pc_arr: np.ndarray, prg_pts_ids: np.ndarray) -> None:
+    """
+    Function that removes isolated postal codes from the area of other postal codes
+
+    :param fin_pc_arr: TERYT code of the region
+    :param prg_pts_ids: List of points representing the boundaries of the region
+    :return: Function does not return any values
+    """
 
     # Podstawowe parametry
     wind_s = int(os.environ['ISS_WINDOW_SIZE'])
@@ -674,8 +779,13 @@ def rmv_isl_pc(fin_pc_arr: np.ndarray, prg_pts_ids: np.ndarray):
                 fin_pc_arr[x_0:x_1, y_0:y_1] = test_wind
 
 
-def rmv_prg_outlyrs(grp_prg_pts: dict) -> dict:
-    """ Function that removes from list of address points potentially incorrect zip codes """
+def rmv_prg_outlyrs(grp_prg_pts: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+    """
+    Function that removes from list of address points potentially incorrect zip codes
+
+    :param grp_prg_pts: Dictionary containing geographical coordinates grouped by postal code
+    :return: Corrected dictionary of geographical coordinates grouped by postcode
+    """
 
     new_grp_prg_pts = {}
 
@@ -698,9 +808,21 @@ def rmv_prg_outlyrs(grp_prg_pts: dict) -> dict:
     return new_grp_prg_pts
 
 
-def create_pc_shps(grp_prg_pts: dict, a_width: int, a_height: int, fin_pc_arr: np.ndarray, shp_fold: str,
-                   ur_coords: np.ndarray, teryt_code: str, path_num: int):
-    """" Function that creates shapefiles of postcodes zones """
+def create_pc_shps(grp_prg_pts: Dict[str, np.ndarray], a_width: int, a_height: int, fin_pc_arr: np.ndarray,
+                   shp_fold: str, ur_coords: np.ndarray, teryt_code: str, path_num: int) -> None:
+    """
+    Function that creates shapefiles of postcodes zones
+
+    :param grp_prg_pts: Dictionary containing geographical coordinates grouped by postal code
+    :param a_width: Width of path bounding box
+    :param a_height: Height of path bounding box
+    :param fin_pc_arr: TERYT code of the region
+    :param shp_fold: Path where the Shapefile will be saved
+    :param ur_coords: Coordinates of the upper right vertex of the path bounding box
+    :param teryt_code: TERYT code of the region
+    :param path_num: Path number
+    :return: Function does not return any values
+    """
 
     # Tworzymy plik rastrowy dla każdego kodu pocztowego
     for i, prg_pts in enumerate(grp_prg_pts.items()):
@@ -759,8 +881,12 @@ def create_pc_shps(grp_prg_pts: dict, a_width: int, a_height: int, fin_pc_arr: n
         del src_ds2
 
 
-def read_wod_pow_shapes() -> Polygon:
-    """ Funtion that reads shapes of surface waters  """
+def read_wod_pow_shapes() -> shapely.geometry.Polygon:
+    """
+    Function that reads shapes of surface waters in Poland
+
+    :return: Shape of surface waters in Poland
+    """
 
     # Sciezka do pliku z wodami powierzchniowymi
     wod_pow_path = os.path.join(os.environ["PARENT_PATH"], os.environ['WOD_POW_PATH'])
@@ -781,8 +907,12 @@ def read_wod_pow_shapes() -> Polygon:
     return wod_pow_shp
 
 
-def create_geom_refs_dict() -> dict:
-    """ Funtion that creates dictionairy with TERYT codes and border points paths of municipalities """
+def create_geom_refs_dict() -> Dict[str, List[Any]]:
+    """
+    Funtion that creates dictionairy with TERYT codes and border points paths of municipalities
+
+    :return: Dictionairy with TERYT codes and border points paths of municipalities
+    """
 
     # Scieżka do pliku z jednostkami administracyjnymi
     ja_path = os.path.join(os.environ["PARENT_PATH"], os.environ['JA_PATH'])
@@ -825,7 +955,14 @@ def create_geom_refs_dict() -> dict:
 
 def create_coords_transform(in_epsg: int, out_epsg: int, change_map_strateg: bool = False) -> \
         osr.CoordinateTransformation:
-    """ Function that creates object that transforms geographical coordinates """
+    """
+    Function that creates object that transforms geographical coordinates
+
+    :param in_epsg: Number of input EPSG coordinates system
+    :param out_epsg: Number of output EPSG coordinates system
+    :param change_map_strateg: Flag indicating if map strategy should be changed
+    :return: Coordinates transformation that transforms spatial references from input EPSG system to output EPSG system
+    """
 
     # Zmieniamy system koordynatow dla gmin
     in_sp_ref = osr.SpatialReference()
@@ -843,3 +980,36 @@ def create_coords_transform(in_epsg: int, out_epsg: int, change_map_strateg: boo
         out_sp_ref.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
     return osr.CoordinateTransformation(in_sp_ref, out_sp_ref)
+
+
+@lru_cache
+def get_corr_reg_name(curr_name: str) -> str:
+    """
+    Function that corrects wrong regions names
+
+    :param curr_name: Current region name
+    :return: Corrected region name
+    """
+
+    # Specjalny wyjatek, bo w danych PRG występuje czasem powiat "JELENIOGORSKI", a od 2021 roku powiat ten nazywa sie
+    # "KARKONOSKI", wiec trzeba to poprawic
+    if curr_name == "JELENIOGORSKI":
+        return "KARKONOSKI"
+
+    # Kolejny wyjatek, bo w danych PRG występuje czasem gmina "SITKOWKA-NOWINY", a od 2021 roku gmina ta nazywa sie
+    # "NOWINY", wiec trzeba to poprawic
+    elif curr_name == "SITKOWKA-NOWINY":
+        return "NOWINY"
+
+    # Kolejny wyjatek, bo w danych PRG występuje czasem gmina "SLUPIA (KONECKA)", a od 2018 roku gmina ta nazywa sie
+    # "SLUPIA KONECKA", wiec trzeba to poprawic
+    elif curr_name == "SLUPIA (KONECKA)":
+        return "SLUPIA KONECKA"
+
+    # Kolejny wyjatek, bo w danych PRG występuje czasem gmina "SLUPIA (JEDRZEJOWSKA)", a oficjalna nazwa tej gminy,
+    # według kodów TERYT, to "SLUPIA", wiec trzeba to poprawic
+    elif curr_name == "SLUPIA (JEDRZEJOWSKA)":
+        return "SLUPIA"
+
+    else:
+        return curr_name

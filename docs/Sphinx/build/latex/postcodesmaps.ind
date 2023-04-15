@@ -1,0 +1,69 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter {\sphinxsymbolsname}
+  \item \spxentry{\_\_init\_\_()}\spxextra{pcm\_db.PRG method}, \hyperpage{3}
+  \item \spxentry{\_\_init\_\_()}\spxextra{pcm\_parser.PRGDataParser method}, \hyperpage{5}
+  \item \spxentry{\_\_repr\_\_()}\spxextra{pcm\_db.PRG method}, \hyperpage{3}
+  \item \spxentry{\_\_weakref\_\_}\spxextra{pcm\_parser.PRGDataParser attribute}, \hyperpage{5}
+
+  \indexspace
+  \bigletter C
+  \item \spxentry{check\_path()}\spxextra{pcm\_parser.PRGDataParser method}, \hyperpage{5}
+  \item \spxentry{clear\_xml\_node()}\spxextra{in module pcm\_utilities}, \hyperpage{7}
+  \item \spxentry{create\_coords\_transform()}\spxextra{in module pcm\_utilities}, \hyperpage{7}
+  \item \spxentry{create\_geom\_dict()}\spxextra{in module pcm\_utilities}, \hyperpage{7}
+  \item \spxentry{create\_geom\_refs\_dict()}\spxextra{in module pcm\_utilities}, \hyperpage{8}
+  \item \spxentry{create\_logger()}\spxextra{in module pcm\_utilities}, \hyperpage{8}
+  \item \spxentry{create\_pc\_shps()}\spxextra{in module pcm\_utilities}, \hyperpage{8}
+  \item \spxentry{create\_points\_list()}\spxextra{pcm\_parser.PRGDataParser method}, \hyperpage{5}
+  \item \spxentry{create\_postal\_codes\_shps()}\spxextra{in module pcm\_utilities}, \hyperpage{8}
+  \item \spxentry{create\_teryt\_dict()}\spxextra{pcm\_parser.PRGDataParser method}, \hyperpage{5}
+  \item \spxentry{csv\_to\_dict()}\spxextra{in module pcm\_utilities}, \hyperpage{8}
+
+  \indexspace
+  \bigletter G
+  \item \spxentry{get\_corr\_reg\_name()}\spxextra{in module pcm\_utilities}, \hyperpage{9}
+
+  \indexspace
+  \bigletter M
+  \item \spxentry{merge\_all\_shps\_save()}\spxextra{in module pcm\_utilities}, \hyperpage{9}
+  \item \spxentry{module}
+    \subitem \spxentry{pcm\_db}, \hyperpage{3}
+    \subitem \spxentry{pcm\_parser}, \hyperpage{5}
+    \subitem \spxentry{pcm\_utilities}, \hyperpage{7}
+  \item \spxentry{mult\_pc\_zones\_shps()}\spxextra{in module pcm\_utilities}, \hyperpage{9}
+
+  \indexspace
+  \bigletter P
+  \item \spxentry{parse\_xml()}\spxextra{pcm\_parser.PRGDataParser method}, \hyperpage{6}
+  \item \spxentry{pcm\_db}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pcm\_parser}
+    \subitem \spxentry{module}, \hyperpage{5}
+  \item \spxentry{pcm\_utilities}
+    \subitem \spxentry{module}, \hyperpage{7}
+  \item \spxentry{prepare\_merging()}\spxextra{in module pcm\_utilities}, \hyperpage{10}
+  \item \spxentry{PRG}\spxextra{class in pcm\_db}, \hyperpage{3}
+  \item \spxentry{PRGDataParser}\spxextra{class in pcm\_parser}, \hyperpage{5}
+
+  \indexspace
+  \bigletter R
+  \item \spxentry{read\_wod\_pow\_shapes()}\spxextra{in module pcm\_utilities}, \hyperpage{10}
+  \item \spxentry{rmv\_isl\_pc()}\spxextra{in module pcm\_utilities}, \hyperpage{10}
+  \item \spxentry{rmv\_prg\_outlyrs()}\spxextra{in module pcm\_utilities}, \hyperpage{10}
+  \item \spxentry{rmv\_sml\_ovrlp\_polygs()}\spxextra{in module pcm\_utilities}, \hyperpage{11}
+
+  \indexspace
+  \bigletter S
+  \item \spxentry{save\_merged\_shps()}\spxextra{in module pcm\_utilities}, \hyperpage{11}
+  \item \spxentry{sngl\_pc\_zone\_shp()}\spxextra{in module pcm\_utilities}, \hyperpage{11}
+
+  \indexspace
+  \bigletter T
+  \item \spxentry{time\_decorator()}\spxextra{in module pcm\_utilities}, \hyperpage{11}
+
+\end{sphinxtheindex}
