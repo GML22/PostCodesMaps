@@ -9,7 +9,7 @@ PostCodesMaps creates SQL database containing all address points and buildings i
 
 - https://dane.gov.pl/pl/dataset/726,panstwowy-rejestr-granic-i-powierzchni-jednostek-podziaow-terytorialnych-kraju/resource/29515
 
-The resulting database was used to generate postcode maps of Poland (in .shp and .geojson formats), which were then overlaid on Google Maps for visualisation purposes.
+The resulting database was used to generate postcode maps of Poland (in .shp and .geojson formats), which were then overlaid on Leaflet JS maps for visualisation purposes.
 
 .. toctree::
    :maxdepth: 4
