@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pcm_utilities.py &mdash; PostCodesMaps 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pcm_parser.py" href="pcm_parser.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PostCodesMaps
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pcm_db.html">pcm_db.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_parser.html">pcm_parser.py</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pcm_utilities.py</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.clear_xml_node"><code class="docutils literal notranslate"><span class="pre">clear_xml_node()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.create_coords_transform"><code class="docutils literal notranslate"><span class="pre">create_coords_transform()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.create_geom_dict"><code class="docutils literal notranslate"><span class="pre">create_geom_dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.create_geom_refs_dict"><code class="docutils literal notranslate"><span class="pre">create_geom_refs_dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.create_logger"><code class="docutils literal notranslate"><span class="pre">create_logger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.create_pc_shps"><code class="docutils literal notranslate"><span class="pre">create_pc_shps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.create_postal_codes_shps"><code class="docutils literal notranslate"><span class="pre">create_postal_codes_shps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.csv_to_dict"><code class="docutils literal notranslate"><span class="pre">csv_to_dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.get_corr_reg_name"><code class="docutils literal notranslate"><span class="pre">get_corr_reg_name()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.merge_all_shps_save"><code class="docutils literal notranslate"><span class="pre">merge_all_shps_save()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.mult_pc_zones_shps"><code class="docutils literal notranslate"><span class="pre">mult_pc_zones_shps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.prepare_merging"><code class="docutils literal notranslate"><span class="pre">prepare_merging()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.read_wod_pow_shapes"><code class="docutils literal notranslate"><span class="pre">read_wod_pow_shapes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.rmv_isl_pc"><code class="docutils literal notranslate"><span class="pre">rmv_isl_pc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.rmv_prg_outlyrs"><code class="docutils literal notranslate"><span class="pre">rmv_prg_outlyrs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.rmv_sml_ovrlp_polygs"><code class="docutils literal notranslate"><span class="pre">rmv_sml_ovrlp_polygs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.save_merged_shps"><code class="docutils literal notranslate"><span class="pre">save_merged_shps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.sngl_pc_zone_shp"><code class="docutils literal notranslate"><span class="pre">sngl_pc_zone_shp()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pcm_utilities.time_decorator"><code class="docutils literal notranslate"><span class="pre">time_decorator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PostCodesMaps</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pcm_utilities.py</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pcm_utilities.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pcm_utilities">
+<span id="pcm-utilities-py"></span><h1>pcm_utilities.py<a class="headerlink" href="#module-pcm_utilities" title="Permalink to this heading"></a></h1>
+<p>Module that collects variety utility functions for geospatial programming</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.clear_xml_node">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">clear_xml_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curr_node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.clear_xml_node" title="Permalink to this definition"></a></dt>
+<dd><p>Function that clears unnecessary XML nodes from RAM memory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>curr_node</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code>) – Current XML node</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.create_coords_transform">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">create_coords_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_epsg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_epsg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_map_strateg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.create_coords_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Function that creates object that transforms geographical coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_epsg</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of input EPSG coordinates system</p></li>
+<li><p><strong>out_epsg</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of output EPSG coordinates system</p></li>
+<li><p><strong>change_map_strateg</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Flag indicating if map strategy should be changed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateTransformation</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Coordinates transformation that transforms spatial references from input EPSG system to output EPSG system</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.create_geom_dict">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">create_geom_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin_geom_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">teryt_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">teryt_gmn_paths_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmn_teryt_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.create_geom_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Function that creates dictionairy of all polygons in current province</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fin_geom_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionary with basic parameters for a given region</p></li>
+<li><p><strong>teryt_arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Numpy array cotaining paths of shapefiles</p></li>
+<li><p><strong>teryt_gmn_paths_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionairy with TERYT codes and border points paths of municipalities</p></li>
+<li><p><strong>gmn_teryt_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Dictionary with TERYT codes and names of municipalities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.create_geom_refs_dict">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">create_geom_refs_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.create_geom_refs_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Funtion that creates dictionairy with TERYT codes and border points paths of municipalities</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionairy with TERYT codes and border points paths of municipalities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.create_logger">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">create_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.create_logger" title="Permalink to this definition"></a></dt>
+<dd><p>Function that creates logging file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of logger</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Logger object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.create_pc_shps">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">create_pc_shps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grp_prg_pts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fin_pc_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shp_fold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ur_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">teryt_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.create_pc_shps" title="Permalink to this definition"></a></dt>
+<dd><p>Function that creates shapefiles of postcodes zones</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grp_prg_pts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – Dictionary containing geographical coordinates grouped by postal code</p></li>
+<li><p><strong>a_width</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Width of path bounding box</p></li>
+<li><p><strong>a_height</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Height of path bounding box</p></li>
+<li><p><strong>fin_pc_arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – TERYT code of the region</p></li>
+<li><p><strong>shp_fold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path where the Shapefile will be saved</p></li>
+<li><p><strong>ur_coords</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Coordinates of the upper right vertex of the path bounding box</p></li>
+<li><p><strong>teryt_code</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – TERYT code of the region</p></li>
+<li><p><strong>path_num</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Path number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.create_postal_codes_shps">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">create_postal_codes_shps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.create_postal_codes_shps" title="Permalink to this definition"></a></dt>
+<dd><p>Function that creates shapefiles of postal codes zones</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.csv_to_dict">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">csv_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_names_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.csv_to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Function that imports CSV file and creates dictionairy from first two columns of that file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path of the CSV file that should be read to dictionary</p></li>
+<li><p><strong>pl_names_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Dictionary containing Polish names of regions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary read from CSV file and corrected using “pl_names_dict” dictionairy</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.get_corr_reg_name">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">get_corr_reg_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curr_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.get_corr_reg_name" title="Permalink to this definition"></a></dt>
+<dd><p>Function that corrects wrong regions names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>curr_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Current region name</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Corrected region name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.merge_all_shps_save">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">merge_all_shps_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mrgd_plg_path_shp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mrgd_plg_path_geoj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pc_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_pl_pc_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fin_schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fin_srs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords_prec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_pts_nums</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.merge_all_shps_save" title="Permalink to this definition"></a></dt>
+<dd><p>Function that merges all polygons of post codes areas and saves them to files .shp and .geojson</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mrgd_plg_path_shp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – SHP path under which merged polygon files are to be saved</p></li>
+<li><p><strong>mrgd_plg_path_geoj</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – GEOJSON path under which merged polygon files are to be saved</p></li>
+<li><p><strong>pc_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionary of current polygons</p></li>
+<li><p><strong>all_pl_pc_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionary of all polygons</p></li>
+<li><p><strong>fin_schema</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – Dictionairy containing final parameters of SHP files</p></li>
+<li><p><strong>fin_srs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – String containing the name of the final coordinate system</p></li>
+<li><p><strong>coords_prec</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – String containing final precison of coordinates</p></li>
+<li><p><strong>add_pts_nums</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionary containing the number of address points and the area of a given municipality</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.mult_pc_zones_shps">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">mult_pc_zones_shps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">teryt_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paths_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_post_cods</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prg_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shp_fold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.mult_pc_zones_shps" title="Permalink to this definition"></a></dt>
+<dd><p>Function that creates multiple shapefiles of postcodes zones for single municipality</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>teryt_code</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – TERYT code of the region</p></li>
+<li><p><strong>paths_list</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – List of points representing the boundaries of the region</p></li>
+<li><p><strong>c_post_cods</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – List of expected postcodes for giving region</p></li>
+<li><p><strong>prg_cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – List with postcode, latitude and longitude of a given address point</p></li>
+<li><p><strong>shp_fold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path where the Shapefile will be saved</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.prepare_merging">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">prepare_merging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin_geom_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wod_pow_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pc_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curr_pc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.prepare_merging" title="Permalink to this definition"></a></dt>
+<dd><p>Function that prepares postcodes polygons for merging</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fin_geom_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionary with basic parameters for a given region</p></li>
+<li><p><strong>wod_pow_shape</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Polygon</span></code>) – Polygons representing surface water shapes</p></li>
+<li><p><strong>pc_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionary of current polygons</p></li>
+<li><p><strong>curr_pc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – List for counting address points for a given postcode</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.read_wod_pow_shapes">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">read_wod_pow_shapes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.read_wod_pow_shapes" title="Permalink to this definition"></a></dt>
+<dd><p>Function that reads shapes of surface waters in Poland</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Polygon</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shape of surface waters in Poland</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.rmv_isl_pc">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">rmv_isl_pc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin_pc_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prg_pts_ids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.rmv_isl_pc" title="Permalink to this definition"></a></dt>
+<dd><p>Function that removes isolated postal codes from the area of other postal codes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fin_pc_arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – TERYT code of the region</p></li>
+<li><p><strong>prg_pts_ids</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – List of points representing the boundaries of the region</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.rmv_prg_outlyrs">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">rmv_prg_outlyrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grp_prg_pts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.rmv_prg_outlyrs" title="Permalink to this definition"></a></dt>
+<dd><p>Function that removes from list of address points potentially incorrect zip codes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>grp_prg_pts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – Dictionary containing geographical coordinates grouped by postal code</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Corrected dictionary of geographical coordinates grouped by postcode</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.rmv_sml_ovrlp_polygs">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">rmv_sml_ovrlp_polygs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin_geom_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.rmv_sml_ovrlp_polygs" title="Permalink to this definition"></a></dt>
+<dd><p>Function that removes too small and overlapping polygons from dictionary “fin_geom_dict”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fin_geom_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionary with basic parameters for a given region</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.save_merged_shps">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">save_merged_shps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shp_fold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wod_pow_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">teryt_gmn_paths_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fin_schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curr_pc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.save_merged_shps" title="Permalink to this definition"></a></dt>
+<dd><p>Function that merges postcodes shapefiles by provinces and save them to the hard disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shp_fold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the folder where the shapefiles will be saved</p></li>
+<li><p><strong>wod_pow_shape</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Polygon</span></code>) – Polygons representing surface water shapes</p></li>
+<li><p><strong>teryt_gmn_paths_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Dictionairy with TERYT codes and boundary paths of municipalities</p></li>
+<li><p><strong>fin_schema</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – Dictionairy containing final parameters of SHP files</p></li>
+<li><p><strong>curr_pc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – List for counting address points for a given postcode</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.sngl_pc_zone_shp">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">sngl_pc_zone_shp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">teryt_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paths_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_post_cods</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shp_fold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.sngl_pc_zone_shp" title="Permalink to this definition"></a></dt>
+<dd><p>Function that creates single shapefile of postal codes zones for single municipality</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>teryt_code</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – TERYT code of the region</p></li>
+<li><p><strong>paths_list</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – List of points representing the boundaries of the region</p></li>
+<li><p><strong>c_post_cods</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – List of expected postcodes for giving region</p></li>
+<li><p><strong>shp_fold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path where the Shapefile will be saved</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function does not return any values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pcm_utilities.time_decorator">
+<span class="sig-prename descclassname"><span class="pre">pcm_utilities.</span></span><span class="sig-name descname"><span class="pre">time_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcm_utilities.time_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator that logs information about time of function execution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> – Function call that should be wrapped</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Time wrapper function call</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pcm_parser.html" class="btn btn-neutral float-left" title="pcm_parser.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Gomulski.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script> 
+
+</body>
+</html>
