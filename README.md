@@ -19,5 +19,5 @@ The resulting database was used to generate postcode maps of Poland (in .shp and
 <p align="left">
 The technical documentation of PostCodesMaps is available at:
   
-- https://gml22.github.io//PostCodesMaps//PostCodesMaps%20-%20technical%20documentation.pdf
+- https://gml22.github.io/PostCodesMaps/PostCodesMaps%20-%20technical%20documentation.pdf
 </p>
