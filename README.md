@@ -15,3 +15,9 @@ PostCodesMaps creates SQL database containing all address points and buildings i
 <p align="justify">
 The resulting database was used to generate postcode maps of Poland (in .shp and .geojson formats), which were then overlaid on Leaflet JS maps for visualisation purposes.
 </p>
+
+<p align="left">
+The technical documentation of PostCodesMaps is available at:
+  
+- https://gml22.github.io//PostCodesMaps//PostCodesMaps%20-%20technical%20documentation.pdf
+</p>
