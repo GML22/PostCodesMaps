@@ -1,5 +1,4 @@
 *.zip
-*.json
 *.db
 *.npy
 *.pyc
