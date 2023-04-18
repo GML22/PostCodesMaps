@@ -5,7 +5,7 @@ html, body{
 	margin: 0;
 	padding: 0;
 	font-family: 'Source Sans Pro', sans-serif;
-	font-size: 1.0vw;
+	font-size: 1vw;
 }
 
 .navbar{
@@ -13,7 +13,7 @@ html, body{
 	background-color: rgba(0, 0, 0, 0.8);
 	font-family: 'Source Sans Pro', sans-serif;
 	height: 3.65vw;
-	font-size: 1.0vw;
+	font-size: 1vw;
 }
 
 #map{
