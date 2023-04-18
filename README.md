@@ -15,3 +15,9 @@ PostCodesMaps creates SQL database containing all address points in Poland by pa
 <p align="justify">
 The resulting database was used to generate postcode maps of Poland (in .shp and .geojson formats), which were then overlaid on Google Maps for visualisation purposes.
 </p>
+
+<p align="left">
+The technical documentation of PostCodesMaps is available at:
+  
+- https://github.com/GML22/PostCodesMaps/blob/469c672ae4cddeb57f26f78e2429bda832c19523/docs/PostCodesMaps%20-%20technical%20documentation.pdf
+</p>
