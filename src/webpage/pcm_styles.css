@@ -5,15 +5,15 @@ html, body{
 	margin: 0;
 	padding: 0;
 	font-family: 'Source Sans Pro', sans-serif;
-	font-size: 1.0vw;
+	font-size: 1.0vi;
 }
 
 .navbar{
 	overflow: hidden;
 	background-color: rgba(0, 0, 0, 0.8);
 	font-family: 'Source Sans Pro', sans-serif;
-	height: 3.65vw;
-	font-size: 1.0vw;
+	height: 3.65vi;
+	font-size: 1.0vi;
 }
 
 #map{
@@ -32,12 +32,12 @@ html, body{
     border: none;
 	outline: none;
 	color: white;
-	width: 4vw;
-	height: 4.15vw;
+	width: 4vi;
+	height: 4.15vi;
 	cursor: pointer;
-	font-size: 2vw;
+	font-size: 2vi;
     background-color: inherit;
-    margin-top: -0.5vw;
+    margin-top: -0.5vi;
 }
 
 .dropdown{
@@ -51,10 +51,10 @@ html, body{
 	outline: none;
 	color: white;
 	font-family: 'Source Sans Pro', sans-serif;
-	font-size: 1.0vw;
+	font-size: 1.0vi;
 	font-weight: bold;
-	width: 18vw;
-    height: 3.65vw;
+	width: 18vi;
+    height: 3.65vi;
     background-color: inherit;
 }
 
@@ -66,17 +66,17 @@ a:hover, .dropbtn:hover, #home:hover{
 	display: none;
 	position: absolute;
 	z-index: 1;
-	width: 18vw;
+	width: 18vi;
 }
 
 .dropdown-content a{
 	float: none;
 	color: white;
 	font-weight: bold;
-	padding-top: 0.6vw;
-	padding-bottom: 0.6vw;
-	padding-left: 0.1vw;
-	padding-right: 0.1vw;
+	padding-top: 0.6vi;
+	padding-bottom: 0.6vi;
+	padding-left: 0.1vi;
+	padding-right: 0.1vi;
 	text-decoration: none;
 	background-color: rgba(0, 0, 0, 0.8);
 	display: block;
@@ -88,8 +88,8 @@ a:hover, .dropbtn:hover, #home:hover{
 	float: none;
 	color: white;
 	font-weight: bold;
-	padding-top: 1vw;
-	padding-bottom: 1vw;
+	padding-top: 1vi;
+	padding-bottom: 1vi;
 	text-decoration: none;
 	background-color: rgba(0, 0, 0, 0.8);
 	display: block;
@@ -102,20 +102,20 @@ a:hover, .dropbtn:hover, #home:hover{
 
 .searchDiv{
 	float: right;
-	margin-left: 1vw;
+	margin-left: 1vi;
 	display: inline-block;
 }
 
 #searchInput{
-	font-size: 0.9vw;
+	font-size: 0.9vi;
 	font-weight: bold;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-style: italic;
 	text-overflow: ellipsis;
-	margin-top: 0.35vw;
-	width: 27vw;
-	height: 2.5vw;
-	margin-right: 1vw;
+	margin-top: 0.35vi;
+	width: 27vi;
+	height: 2.5vi;
+	margin-right: 1vi;
 	cursor: pointer;
 	text-align: center;
 }
@@ -124,10 +124,10 @@ a:hover, .dropbtn:hover, #home:hover{
 	display: none;
 	position: absolute;
 	z-index: 1;
-	width: 27vw;
-	margin-top: 0.05vw;
+	width: 27vi;
+	margin-top: 0.05vi;
 	background-color: rgb(255, 255, 255);
-    font-size: 0.9vw;
+    font-size: 0.9vi;
     font-family: 'Source Sans Pro', sans-serif;
     cursor: pointer;
     text-align: center;
@@ -147,7 +147,7 @@ input:focus + .autocomplete-content{
 }
 
 .ac_butt{
-    border: 0.5px solid black;
+    border: 0.05vi solid black;
 }
 
 .ac_butt:hover{
@@ -157,8 +157,8 @@ input:focus + .autocomplete-content{
 
 #srch_lbl{
     float: right;
-	margin-top: 1.1vw;
-	margin-right: -0.5vw;
+	margin-top: 1.1vi;
+	margin-right: -0.5vi;
 	display: inline-block;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-weight: bold;
@@ -174,12 +174,12 @@ input[type="search"]::-webkit-search-cancel-button {
     border: none;
     outline: none;
     color: white;
-    width: 4vw;
-    height: 4.5vw;
+    width: 4vi;
+    height: 4.5vi;
     cursor: pointer;
-    font-size: 2vw;
+    font-size: 2vi;
     background-color: inherit;
-    margin-top: -0.8vw;
+    margin-top: -0.8vi;
     display: inline-block;
 }
 
@@ -189,7 +189,7 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .tltip_stl{
     position: absolute;
-    font-size: 40px;
+    font-size: 2.5vi;
     font-weight: 1500;
     background-color: transparent !important;
     border: none !important;
@@ -199,12 +199,12 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .loader {
     position: absolute;
-    top: calc(50% - 100px);
-    left: calc(50% - 100px);
-    width: 200px;
-    height: 200px;
+    top: calc(50% - 9vi);
+    left: calc(50% - 9vi);
+    width: 18vi;
+    height: 18vi;
     border-radius: 50%;
-    perspective: 800px;
+    perspective: 50vi;
 }
 
 .inner {
@@ -219,21 +219,21 @@ input[type="search"]::-webkit-search-cancel-button {
     left: 0%;
     top: 0%;
     animation: rotate-one 1s linear infinite;
-    border-bottom: 15px solid #003366;
+    border-bottom: 1vi solid #003366;
 }
 
 .inner.two {
     right: 0%;
     top: 0%;
     animation: rotate-two 1s linear infinite;
-    border-right: 15px solid #f6546a;
+    border-right: 1vi solid #f6546a;
 }
 
 .inner.three {
     right: 0%;
     bottom: 0%;
     animation: rotate-three 1s linear infinite;
-    border-top: 15px solid #66cdaa;
+    border-top: 1vi solid #66cdaa;
 }
 
 @keyframes rotate-one {
@@ -278,13 +278,19 @@ input[type="search"]::-webkit-search-cancel-button {
 
 #loading-image {
     position: absolute;
-    top: 100px;
-    left: 240px;
+    top: 10vi;
+    left: 12vi;
     z-index: 100;
+}
+
+h1{
+    color: white;
+    margin-top: 40%;
+    font-size: 2vi;
 }
 
 h2{
     color: white;
-    margin-top: 45%;
-    font-size: 30px;
+    margin-top: -5%;
+    font-size: 2vi;
 }
