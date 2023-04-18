@@ -27,19 +27,15 @@ var gmn_pow_nms;
 var map;
 var totalSeconds = 0;
 
-function update_timer(){
-    // Funkcja aktualizaująca timer
-
-    // Naliczamy 1 setną sekundy
-    ++totalSeconds;
-
-    // Dodajemy informacje o czasie
-    var fin_time = totalSeconds / 100;
-    $('h2').text(fin_time.toFixed(1));
-};
-
 function initMap(){
     // Funkcja generujaca glowna mape oraz uzupelniajaca menu
+
+    // Dostosowujemy scalowanie
+    var siteWidth = 1280;
+    var scale = screen.width / siteWidth;
+
+    document.querySelector('meta[name="viewport"]').setAttribute('content',
+    'width='+siteWidth+', initial-scale='+scale+'');
 
     // Tworzymy obiekt mapy
     var drop = document.getElementById("drop1");
@@ -87,6 +83,17 @@ function initMap(){
 
     // Jako poczatkowe dopasowanie przypisujemy wszystkie klucze
     mtch_gmns_pows = gmn_pow_keys;
+};
+
+function update_timer(){
+    // Funkcja aktualizaująca timer
+
+    // Naliczamy 1 setną sekundy
+    ++totalSeconds;
+
+    // Dodajemy informacje o czasie
+    var fin_time = totalSeconds / 100;
+    $('h2').text(fin_time.toFixed(1));
 };
 
 function disp_layer(num){
