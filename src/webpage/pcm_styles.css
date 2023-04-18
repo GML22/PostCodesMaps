@@ -5,15 +5,15 @@ html, body{
 	margin: 0;
 	padding: 0;
 	font-family: 'Source Sans Pro', sans-serif;
-	font-size: 1.0vw;
+	font-size: 2vh;
 }
 
 .navbar{
 	overflow: hidden;
 	background-color: rgba(0, 0, 0, 0.8);
 	font-family: 'Source Sans Pro', sans-serif;
-	height: 3.65vw;
-	font-size: 1.0vw;
+	height: 7.3vh;
+	font-size: 2vh;
 }
 
 #map{
@@ -32,12 +32,12 @@ html, body{
     border: none;
 	outline: none;
 	color: white;
-	width: 4vw;
-	height: 4.15vw;
+	width: 8vh;
+	height: 8.30vh;
 	cursor: pointer;
-	font-size: 2vw;
+	font-size: 4vh;
     background-color: inherit;
-    margin-top: -0.5vw;
+    margin-top: -1vh;
 }
 
 .dropdown{
@@ -51,10 +51,10 @@ html, body{
 	outline: none;
 	color: white;
 	font-family: 'Source Sans Pro', sans-serif;
-	font-size: 1.0vw;
+	font-size: 2vh;
 	font-weight: bold;
-	width: 18vw;
-    height: 3.65vw;
+	width: 36vh;
+    height: 7.3vh;
     background-color: inherit;
 }
 
@@ -66,17 +66,17 @@ a:hover, .dropbtn:hover, #home:hover{
 	display: none;
 	position: absolute;
 	z-index: 1;
-	width: 18vw;
+	width: 36vh;
 }
 
 .dropdown-content a{
 	float: none;
 	color: white;
 	font-weight: bold;
-	padding-top: 0.6vw;
-	padding-bottom: 0.6vw;
-	padding-left: 0.1vw;
-	padding-right: 0.1vw;
+	padding-top: 1.2vh;
+	padding-bottom: 1.2vh;
+	padding-left: 0.2vh;
+	padding-right: 0.2vh;
 	text-decoration: none;
 	background-color: rgba(0, 0, 0, 0.8);
 	display: block;
@@ -88,8 +88,8 @@ a:hover, .dropbtn:hover, #home:hover{
 	float: none;
 	color: white;
 	font-weight: bold;
-	padding-top: 1vw;
-	padding-bottom: 1vw;
+	padding-top: 2vh;
+	padding-bottom: 2vh;
 	text-decoration: none;
 	background-color: rgba(0, 0, 0, 0.8);
 	display: block;
@@ -102,20 +102,20 @@ a:hover, .dropbtn:hover, #home:hover{
 
 .searchDiv{
 	float: right;
-	margin-left: 1vw;
+	margin-left: 2vh;
 	display: inline-block;
 }
 
 #searchInput{
-	font-size: 0.9vw;
+	font-size: 1.8vh;
 	font-weight: bold;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-style: italic;
 	text-overflow: ellipsis;
-	margin-top: 0.35vw;
-	width: 27vw;
-	height: 2.5vw;
-	margin-right: 1vw;
+	margin-top: 0.7vh;
+	width: 54vh;
+	height: 5vh;
+	margin-right: 2vh;
 	cursor: pointer;
 	text-align: center;
 }
@@ -124,10 +124,10 @@ a:hover, .dropbtn:hover, #home:hover{
 	display: none;
 	position: absolute;
 	z-index: 1;
-	width: 27vw;
-	margin-top: 0.05vw;
+	width: 54vh;
+	margin-top: 0.1vh;
 	background-color: rgb(255, 255, 255);
-    font-size: 0.9vw;
+    font-size: 1.8vh;
     font-family: 'Source Sans Pro', sans-serif;
     cursor: pointer;
     text-align: center;
@@ -147,7 +147,7 @@ input:focus + .autocomplete-content{
 }
 
 .ac_butt{
-    border: 0.05vw solid black;
+    border: 0.1vh solid black;
 }
 
 .ac_butt:hover{
@@ -157,8 +157,8 @@ input:focus + .autocomplete-content{
 
 #srch_lbl{
     float: right;
-	margin-top: 1.1vw;
-	margin-right: -0.5vw;
+	margin-top: 2.2vh;
+	margin-right: -1vh;
 	display: inline-block;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-weight: bold;
@@ -174,12 +174,12 @@ input[type="search"]::-webkit-search-cancel-button {
     border: none;
     outline: none;
     color: white;
-    width: 4vw;
-    height: 4.5vw;
+    width: 8vh;
+    height: 9vh;
     cursor: pointer;
-    font-size: 2vw;
+    font-size: 4vh;
     background-color: inherit;
-    margin-top: -0.8vw;
+    margin-top: -1.6vh;
     display: inline-block;
 }
 
@@ -189,7 +189,7 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .tltip_stl{
     position: absolute;
-    font-size: 2.5vw;
+    font-size: 5vh;
     font-weight: 1500;
     background-color: transparent !important;
     border: none !important;
@@ -199,12 +199,12 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .loader {
     position: absolute;
-    top: calc(50% - 9vw);
-    left: calc(50% - 9vw);
-    width: 18vw;
-    height: 18vw;
+    top: calc(50% - 18vh);
+    left: calc(50% - 18vh);
+    width: 36vh;
+    height: 36vh;
     border-radius: 50%;
-    perspective: 50vw;
+    perspective: 100vh;
 }
 
 .inner {
@@ -219,21 +219,21 @@ input[type="search"]::-webkit-search-cancel-button {
     left: 0%;
     top: 0%;
     animation: rotate-one 1s linear infinite;
-    border-bottom: 1vw solid #003366;
+    border-bottom: 2vh solid #003366;
 }
 
 .inner.two {
     right: 0%;
     top: 0%;
     animation: rotate-two 1s linear infinite;
-    border-right: 1vw solid #f6546a;
+    border-right: 2vh solid #f6546a;
 }
 
 .inner.three {
     right: 0%;
     bottom: 0%;
     animation: rotate-three 1s linear infinite;
-    border-top: 1vw solid #66cdaa;
+    border-top: 2vh solid #66cdaa;
 }
 
 @keyframes rotate-one {
@@ -278,19 +278,19 @@ input[type="search"]::-webkit-search-cancel-button {
 
 #loading-image {
     position: absolute;
-    top: 10vw;
-    left: 12vw;
+    top: 20vh;
+    left: 24vh;
     z-index: 100;
 }
 
 h1{
     color: white;
     margin-top: 40%;
-    font-size: 2vw;
+    font-size: 4vh;
 }
 
 h2{
     color: white;
     margin-top: -5%;
-    font-size: 2vw;
+    font-size: 4vh;
 }
