@@ -30,13 +30,6 @@ var totalSeconds = 0;
 function initMap(){
     // Funkcja generujaca glowna mape oraz uzupelniajaca menu
 
-    // Dostosowujemy scalowanie
-    var siteWidth = 1280;
-    var scale = screen.width / siteWidth;
-
-    document.querySelector('meta[name="viewport"]').setAttribute('content',
-    'width='+siteWidth+', initial-scale='+scale+'');
-
     // Tworzymy obiekt mapy
     var drop = document.getElementById("drop1");
 
