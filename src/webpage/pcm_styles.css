@@ -28,6 +28,18 @@ html, body{
     z-index: 0;
 }
 
+/* https://gist.github.com/BrendonKoz/b1df234fe3ee388b402cd8e98f7eedbd */
+:root {
+    --map-tiles-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+/* https://gist.github.com/BrendonKoz/b1df234fe3ee388b402cd8e98f7eedbd */
+@media (prefers-color-scheme: dark) {
+    .map-tiles {
+        filter:var(--map-tiles-filter, none);
+	}
+}
+
 .homebtn{
     border: none;
 	outline: none;

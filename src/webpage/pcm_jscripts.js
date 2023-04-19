@@ -37,10 +37,14 @@ function initMap(){
     map = L.map('map').setView([52.2298, 21.0117], 6);
 
     // Dodajemy mape
-    L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 20,
-        subdomains:['mt0','mt1','mt2','mt3']
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'map-tiles'
     }).addTo(map);
+
+   // Przesuwamy informacje o źródle map do prawego górnego rogu
+    map.attributionControl.setPosition('topright');
 
     // Linijka, ktora powoduje, że przy zoomowaniu przy pomocy przycisków nie znika menu
     map.getContainer().focus = ()=>{};

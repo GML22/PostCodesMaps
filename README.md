@@ -5,7 +5,7 @@ PostCodesMaps is an application written in Python that creates postcode maps of 
 </p>
 
 <p align="justify">
-PostCodesMaps creates SQL database containing all address points in Poland by parsing files in Geography Markup Language format into SQL tables. The main data source of GeocoderPL is The National Register of Boundaries Database (also known as PRG database) - state-maintained reference database of all address points in Poland (including administrative division of the country):
+PostCodesMaps creates SQL database containing all address points in Poland by parsing files in Geography Markup Language format into SQL tables. The main data source of PostCodesMaps is The National Register of Boundaries Database (also known as PRG database) - state-maintained reference database of all address points in Poland (including administrative division of the country):
 
 - https://dane.gov.pl/pl/dataset/726,panstwowy-rejestr-granic-i-powierzchni-jednostek-podziaow-terytorialnych-kraju/resource/29538
 
@@ -13,7 +13,7 @@ PostCodesMaps creates SQL database containing all address points in Poland by pa
 </p>
 
 <p align="justify">
-The resulting database was used to generate postcode maps of Poland (in .shp and .geojson formats), which were then overlaid on Google Maps for visualisation purposes.
+The resulting database was used to generate postcode maps of Poland (in .shp and .geojson formats), which were then overlaid on OpenStreetMap for visualisation purposes.
 </p>
 
 <p align="left">
