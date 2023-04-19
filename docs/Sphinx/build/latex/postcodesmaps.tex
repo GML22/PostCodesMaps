@@ -64,7 +64,7 @@
 
 
 \title{PostCodesMaps}
-\date{Apr 19, 2023}
+\date{Apr 20, 2023}
 \release{1.0.0}
 \author{Mateusz Gomulski}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -89,7 +89,7 @@
 PostCodesMaps is an application written in Python that creates postcode maps of regions in Poland based on a set of address points from the Polish National Register of Boundaries Database (also known as the PRG database). As part of PostCodeMaps, a website has been created that allows visualisation of the generated postcodes maps.
 
 \sphinxAtStartPar
-PostCodesMaps creates SQL database containing all address points in Poland by parsing files in Geography Markup Language format into SQL tables. The main data source of GeocoderPL is The National Register of Boundaries Database (also known as PRG database) \sphinxhyphen{} state\sphinxhyphen{}maintained reference database of all address points in Poland (including administrative division of the country):
+PostCodesMaps creates SQL database containing all address points in Poland by parsing files in Geography Markup Language format into SQL tables. The main data source of PostCodesMaps is The National Register of Boundaries Database (also known as PRG database) \sphinxhyphen{} state\sphinxhyphen{}maintained reference database of all address points in Poland (including administrative division of the country):
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
@@ -102,7 +102,7 @@ PostCodesMaps creates SQL database containing all address points in Poland by pa
 \end{itemize}
 
 \sphinxAtStartPar
-The resulting database was used to generate postcode maps of Poland (in .shp and .geojson formats), which were then overlaid on Google Maps maps for visualisation purposes.
+The resulting database was used to generate postcode maps of Poland (in .shp and .geojson formats), which were then overlaid on OpenStreetMap for visualisation purposes.
 
 \sphinxstepscope
 
