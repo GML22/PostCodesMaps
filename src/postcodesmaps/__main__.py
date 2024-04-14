@@ -14,6 +14,7 @@ s_time = time.time()
 
 # Sprawdzamy w bazie czy tablica 'PRG_TABLE' istnieje, jeżeli nie istnieje to ja tworzymy na podstawie bazy PRG
 if not sa.inspect(SQL_ENGINE).has_table("PRG_TABLE"):
+
     # Tworzymy domyslne obiekt tabeli PRG
     BASE.metadata.create_all(SQL_ENGINE)
 

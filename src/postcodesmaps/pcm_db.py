@@ -14,7 +14,7 @@ parent_path = os.path.join(os.getcwd()[:os.getcwd().index("PostCodesMaps")], "Po
 load_dotenv(os.path.join(parent_path, ".env"))
 os.environ["PARENT_PATH"] = parent_path
 
-# Deklarujemy silnik SQL
+# Deklarujemy obiekt reprezentujący silnik SQL
 SQL_ENGINE = sa.create_engine("sqlite:///" + os.path.join(os.environ["PARENT_PATH"], os.environ["DB_PATH"]))
 
 

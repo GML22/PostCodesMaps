@@ -575,6 +575,7 @@ def rmv_sml_ovrlp_polygs(fin_geom_dict: Dict[str, Dict[Any, Any]]) -> None:
             rmv_mask = np.ones(len(geom_arr), dtype=bool)
 
             for i, c_geom in enumerate(geom_arr):
+
                 # Wielkosc biezacego wielokata
                 buff_geom = c_geom[1].buffer(int(os.environ['BUFF_SIZE']))
                 c_area = buff_geom.area

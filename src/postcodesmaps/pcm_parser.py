@@ -139,7 +139,7 @@ class PRGDataParser(ABC):
                 c_ind = 0
                 c_row = [''] * 4
 
-            # Czyscimy przetworzone obiekty wezlow XML z pamieci
+            # Czyścimy przetworzone obiekty wezlów XML z pamięci
             clear_xml_node(curr_node)
 
         # Dodajemy punkty do bazy
